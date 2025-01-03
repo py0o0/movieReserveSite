@@ -19,4 +19,13 @@
     <delete id="deleteByUsername" parameterType="String">
         DELETE FROM user WHERE username = #{username}
     </delete>
+
+    <select id="getAll" resultType="User">
+        select * from user order by 1 desc
+        LIMIT #{page},#{size}
+    </select>
+
+    <select id="userTotal" resultType="Long">
+        select count(*) from user
+    </select>
 </mapper>
