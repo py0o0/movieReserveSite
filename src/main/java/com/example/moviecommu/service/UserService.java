@@ -23,16 +23,17 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean join(UserDto userDto) {
-        if(userRepository.exsistByUsername(userDto.getUserName()) == 1)
+        User user = userRepository.findByUsername(userDto.getUserName());
+        if(user != null)
             return false;
 
-        User user = User.builder()
+        User nUser = User.builder()
                 .userName(userDto.getUserName())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_USER")
                 .build();
 
-        userRepository.saveUser(user);
+        userRepository.saveUser(nUser);
         return true;
     }
 
@@ -40,7 +41,8 @@ public class UserService {
         System.out.println(userUtil.getCurrentUserRole());
         if(!username.equals(userUtil.getCurrentUsername()) && !userUtil.getCurrentUserRole().equals("ROLE_ADMIN"))
             return false;
-        if( userRepository.exsistByUsername(username) == 0)
+        User user = userRepository.findByUsername(username);
+        if(user==null)
             return false;
         userRepository.deleteByUsername(username);
         return true;
