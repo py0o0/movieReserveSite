@@ -26,12 +26,12 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean join(UserDto userDto) {
-        User user = userRepository.findByUsername(userDto.getUserName());
+        User user = userRepository.findById(userDto.getId());
         if(user != null)
             return false;
 
         User nUser = User.builder()
-                .userName(userDto.getUserName())
+                .id(userDto.getId())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_USER")
                 .build();
@@ -41,13 +41,12 @@ public class UserService {
     }
 
     public boolean delete(String username) {
-        System.out.println(userUtil.getCurrentUserRole());
         if(!username.equals(userUtil.getCurrentUsername()) && !userUtil.getCurrentUserRole().equals("ROLE_ADMIN"))
             return false;
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findById(username);
         if(user==null)
             return false;
-        userRepository.deleteByUsername(username);
+        userRepository.deleteById(username);
         return true;
     }
 
@@ -63,7 +62,7 @@ public class UserService {
         List<UserDto> userDtoList = new ArrayList<>();
         for (User user : userList) {
             UserDto userDto = new UserDto();
-            userDto.setUserName(user.getUsername());
+            userDto.setId(user.getId());
             userDtoList.add(userDto);
         }
 
@@ -75,12 +74,12 @@ public class UserService {
     }
 
     public boolean adminJoin(UserDto userDto) {
-        User user = userRepository.findByUsername(userDto.getUserName());
+        User user = userRepository.findById(userDto.getId());
         if(user != null)
             return false;
 
         User nUser = User.builder()
-                .userName(userDto.getUserName())
+                .id(userDto.getId())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_ADMIN")
                 .build();
@@ -90,21 +89,44 @@ public class UserService {
     }
 
     public boolean follow(String username) {
-        System.out.println(username);
-        User following = userRepository.findByUsername(username);
+        User following = userRepository.findById(username);
         String user = userUtil.getCurrentUsername();
-        System.out.println(following);
-        System.out.println(user);
         if(user == null || following == null)
             return false;
 
         Following follow = Following.builder()
                 .userId(user)
-                .flwName(following.getUsername())
+                .flwName(following.getId())
                 .build();
         if(followingRepository.findByFlw(follow) == 0)
             followingRepository.save(follow);
         else  followingRepository.deleteByFlw(follow);
         return true;
+    }
+
+    public UserPageResponseDto getFollowingList(int size, int page) {
+        Map<String, Object> params = new HashMap<>();
+        String userId = userUtil.getCurrentUsername();
+
+        page = size * page;
+        params.put("size", size);
+        params.put("page", page);
+        params.put("userId", userId);
+
+        long total = followingRepository.flwTotal(userId);
+        List<User> flwList = followingRepository.findByUserId(params);
+
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : flwList) {
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDtoList.add(userDto);
+        }
+
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto();
+        userPageResponseDto.setUsers(userDtoList);
+        userPageResponseDto.setUserCnt(total);
+
+        return userPageResponseDto;
     }
 }

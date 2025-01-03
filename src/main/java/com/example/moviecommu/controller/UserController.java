@@ -1,13 +1,13 @@
 package com.example.moviecommu.controller;
 
 import com.example.moviecommu.dto.UserDto;
+import com.example.moviecommu.dto.UserPageResponseDto;
 import com.example.moviecommu.service.UserService;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<String> join(String username, String password) {
         UserDto userDto = new UserDto();
-        userDto.setUserName(username);
+        userDto.setId(username);
         userDto.setPassword(password);
 
         if(userService.join(userDto)){
@@ -51,11 +51,16 @@ public class UserController {
         return ResponseEntity.badRequest().body("delete failed");
     }
 
-    @PostMapping("/follow")
+    @GetMapping("/follow")
     public ResponseEntity<String> follow(String username) {
         if(userService.follow(username))
             return ResponseEntity.ok("followed");
         return ResponseEntity.badRequest().body("follow failed");
+    }
+
+    @GetMapping("/followList")
+    public UserPageResponseDto getFollowingList(int size, int page) {
+        return userService.getFollowingList(size, page);
     }
 
 }

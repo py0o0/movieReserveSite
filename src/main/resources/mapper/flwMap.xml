@@ -15,4 +15,15 @@
     <delete id="deleteByFlw" parameterType="Flw">
         delete from following where userId=#{userId} and flwName=#{flwName}
     </delete>
+
+    <select id="flwTotal" parameterType="String" resultType="Long">
+        select count(*) from following where userId=#{userId}
+    </select>
+
+    <select id="findByUserId" resultType="User">
+        select * from user where id in (select flwName from following where userId = #{userId})
+
+                           order by 1 desc
+        Limit #{page},#{size}
+    </select>
 </mapper>

@@ -27,7 +27,7 @@ public class AdminController {
     @PostMapping("/join")
     public ResponseEntity<String> join(String username, String password) {
         UserDto userDto = new UserDto();
-        userDto.setUserName(username);
+        userDto.setId(username);
         userDto.setPassword(password);
 
         if(userService.adminJoin(userDto)){

@@ -9,11 +9,11 @@ import java.util.Map;
 
 @Mapper
 public interface UserRepository {
-    User findByUsername(String username);
+    User findById(String username);
 
     void saveUser(User user);
 
-    void deleteByUsername(String username);
+    void deleteById(String username);
 
     List<User> getAll(Map<String, Object> params);
 

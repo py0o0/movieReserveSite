@@ -20,15 +20,15 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
-    private String userName;
+    private String id;
     private String password;
     private String role;
 
     @Builder
-    public User(String userName, String password, String role) {
-        this.userName = userName;
+    public User(String id, String password, String role) {
+        this.id = id;
         this.password = password;
         this.role = role;
     }
@@ -48,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id.toString();
+        return userId.toString();
     }
 
     @Override
