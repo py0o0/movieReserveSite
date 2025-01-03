@@ -70,4 +70,19 @@ public class UserService {
 
         return userPageResponseDto;
     }
+
+    public boolean adminJoin(UserDto userDto) {
+        User user = userRepository.findByUsername(userDto.getUserName());
+        if(user != null)
+            return false;
+
+        User nUser = User.builder()
+                .userName(userDto.getUserName())
+                .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
+                .role("ROLE_ADMIN")
+                .build();
+
+        userRepository.saveUser(nUser);
+        return true;
+    }
 }
