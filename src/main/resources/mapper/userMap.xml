@@ -4,24 +4,24 @@
 
 <mapper namespace="com.example.moviecommu.repository.UserRepository">
     <select id="findById" parameterType="String" resultType="User">
-        select * from user where id = #{id}
+        select * from user_table where id = #{id}
     </select>
 
     <insert id="saveUser" parameterType="User">
-        insert into user (id, password, role)
+        insert into user_table (id, password, role)
         values (#{id},#{password},#{role})
     </insert>
 
     <delete id="deleteById" parameterType="String">
-        DELETE FROM user WHERE id = #{id}
+        DELETE FROM user_table WHERE id = #{id}
     </delete>
 
     <select id="getAll" resultType="User">
-        select * from user order by 1 desc
+        select * from user_table order by 1 desc
         LIMIT #{page},#{size}
     </select>
 
     <select id="userTotal" resultType="Long">
-        select count(*) from user
+        select count(*) from user_table
     </select>
 </mapper>
