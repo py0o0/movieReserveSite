@@ -2,7 +2,9 @@ package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.dto.UserPageResponseDto;
+import com.example.moviecommu.entity.Following;
 import com.example.moviecommu.entity.User;
+import com.example.moviecommu.repository.FollowingRepository;
 import com.example.moviecommu.repository.UserRepository;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class UserService {
 
     private final UserUtil userUtil;
     private final UserRepository userRepository;
+    private final FollowingRepository followingRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean join(UserDto userDto) {
@@ -83,6 +86,25 @@ public class UserService {
                 .build();
 
         userRepository.saveUser(nUser);
+        return true;
+    }
+
+    public boolean follow(String username) {
+        System.out.println(username);
+        User following = userRepository.findByUsername(username);
+        String user = userUtil.getCurrentUsername();
+        System.out.println(following);
+        System.out.println(user);
+        if(user == null || following == null)
+            return false;
+
+        Following follow = Following.builder()
+                .userId(user)
+                .flwName(following.getUsername())
+                .build();
+        if(followingRepository.findByFlw(follow) == 0)
+            followingRepository.save(follow);
+        else  followingRepository.deleteByFlw(follow);
         return true;
     }
 }

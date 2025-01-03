@@ -51,4 +51,11 @@ public class UserController {
         return ResponseEntity.badRequest().body("delete failed");
     }
 
+    @PostMapping("/follow")
+    public ResponseEntity<String> follow(String username) {
+        if(userService.follow(username))
+            return ResponseEntity.ok("followed");
+        return ResponseEntity.badRequest().body("follow failed");
+    }
+
 }
