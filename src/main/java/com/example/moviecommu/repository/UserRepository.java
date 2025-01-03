@@ -10,4 +10,6 @@ public interface UserRepository {
     void saveUser(User user);
 
     int exsistByUsername(String userName);
+
+    void deleteByUsername(String username);
 }

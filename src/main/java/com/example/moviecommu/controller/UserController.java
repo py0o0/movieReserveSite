@@ -2,6 +2,7 @@ package com.example.moviecommu.controller;
 
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.service.UserService;
+import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
+    private final UserUtil userUtil;
     private final UserService userService;
 
     @GetMapping("/do")
     public String doUser() {
-        return "do";
+        return userUtil.getCurrentUserRole();
     }
 
     @GetMapping("/")
@@ -39,6 +41,14 @@ public class UserController {
         }
         else
             return ResponseEntity.badRequest().body("join failed");
+    }
+
+    @PostMapping("/user/delete")
+    public ResponseEntity<String> deleteUser(String username) {
+        if(userService.delete(username)){
+            return ResponseEntity.ok("deleted");
+        }
+        return ResponseEntity.badRequest().body("delete failed");
     }
 
 }

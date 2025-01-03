@@ -15,4 +15,8 @@
         insert into user (username, password, role)
         values (#{username},#{password},#{role})
     </insert>
+
+    <delete id="deleteByUsername" parameterType="String">
+        DELETE FROM user WHERE username = #{username}
+    </delete>
 </mapper>
