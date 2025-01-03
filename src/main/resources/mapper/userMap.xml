@@ -6,4 +6,13 @@
     <select id="findByUsername" parameterType="String" resultType="User">
         select * from user where username = #{username}
     </select>
+
+    <select id="exsistByUsername" parameterType="String" resultType="Integer">
+        select count(*) from user where username = #{username}
+    </select>
+
+    <insert id="saveUser" parameterType="User">
+        insert into user (username, password, role)
+        values (#{username},#{password},#{role})
+    </insert>
 </mapper>
