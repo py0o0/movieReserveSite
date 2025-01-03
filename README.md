@@ -2,13 +2,15 @@
 
 ## UserController API
 
-| **Endpoint**             | **Method** | **Description**                             | **Request Parameters**               | **Response**                                                                                       |
-|--------------------------|------------|---------------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------|
-| `/do`                    | `GET`      | 현재 사용자 역할을 반환                  | 없음                                 | `200 OK`: 사용자 역할 반환 <br> **Response Body**: 사용자 역할 (예: `"ROLE_USER"`, `"ROLE_ADMIN"`) |
-| `/`                       | `GET`      | 기본 인덱스 페이지 반환                    | 없음                                 | `200 OK`: `"index"` 반환                                                                           |
-| `/admin`                  | `GET`      | 관리 페이지 반환                           | 없음                                 | `200 OK`: `"admin"` 반환                                                                           |
-| `/join`                   | `POST`     | 새로운 사용자 가입 처리                   | `username` (String), `password` (String) | `200 OK`: `"joined"` 반환 <br> `400 Bad Request`: `"join failed"` 반환                           |
-| `/user/delete`            | `POST`     | 사용자를 삭제                               | `username` (String)                  | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환                         |
+| **Endpoint**             | **Method** | **Description**                              | **Request Parameters**               | **Response**                                                                                       |
+|--------------------------|------------|----------------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------|
+| `/do`                    | `GET`      | 현재 사용자 역할을 반환                     | 없음                                 | `200 OK`: 사용자 역할 반환 <br> **Response Body**: 사용자 역할 (예: `"ROLE_USER"`, `"ROLE_ADMIN"`) |
+| `/`                      | `GET`      | 기본 인덱스 페이지 반환                     | 없음                                 | `200 OK`: `"index"` 반환                                                                           |
+| `/admin`                 | `GET`      | 관리 페이지 반환                            | 없음                                 | `200 OK`: `"admin"` 반환                                                                           |
+| `/join`                  | `POST`     | 새로운 사용자 가입 처리                    | `username` (String), `password` (String) | `200 OK`: `"joined"` 반환 <br> `400 Bad Request`: `"join failed"` 반환                           |
+| `/user/delete`           | `POST`     | 사용자를 삭제                                | `username` (String)                  | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환                         |
+| `/follow`                | `GET`      | 사용자를 팔로우                              | `username` (String)                  | `200 OK`: `"followed"` 반환 <br> `400 Bad Request`: `"follow failed"` 반환                        |
+| `/followList`            | `GET`      | 팔로우한 사용자 목록 조회                   | `size` (int), `page` (int)           | `200 OK`: 팔로우한 사용자 목록 반환 <br> **Response Body**: `UserPageResponseDto` <br> 포함된 데이터: `userCnt` (총 사용자 수), `users` (사용자 목록)    |
 
 ## AdminController API
 
