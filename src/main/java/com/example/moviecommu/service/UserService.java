@@ -1,7 +1,8 @@
 package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.UserDto;
-import com.example.moviecommu.dto.UserPageResponseDto;
+import com.example.moviecommu.dto.UserPageDto;
+import com.example.moviecommu.dto.UserPagingDto;
 import com.example.moviecommu.entity.Following;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.FollowingRepository;
@@ -47,7 +48,7 @@ public class UserService {
         return true;
     }
 
-    public UserPageResponseDto getAll(int size, int page) {
+    public UserPagingDto getAll(int size, int page) {
         Map<String, Object> params = new HashMap<>();
         page = size * page;
         params.put("size", size);
@@ -63,11 +64,11 @@ public class UserService {
             userDtoList.add(userDto);
         }
 
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto();
-        userPageResponseDto.setUsers(userDtoList);
-        userPageResponseDto.setUserCnt(total);
+        UserPagingDto userPagingDto = new UserPagingDto();
+        userPagingDto.setUsers(userDtoList);
+        userPagingDto.setUserCnt(total);
 
-        return userPageResponseDto;
+        return userPagingDto;
     }
 
     public boolean adminJoin(UserDto userDto) {
@@ -101,7 +102,7 @@ public class UserService {
         return true;
     }
 
-    public UserPageResponseDto getFollowingList(String username,int size, int page) {
+    public UserPagingDto getFollowingList(String username, int size, int page) {
         User nUser = userRepository.findById(username);
         Long userId = nUser.getUserId();
 
@@ -122,14 +123,14 @@ public class UserService {
             userDtoList.add(userDto);
         }
 
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto();
-        userPageResponseDto.setUsers(userDtoList);
-        userPageResponseDto.setUserCnt(total);
+        UserPagingDto userPagingDto = new UserPagingDto();
+        userPagingDto.setUsers(userDtoList);
+        userPagingDto.setUserCnt(total);
 
-        return userPageResponseDto;
+        return userPagingDto;
     }
 
-    public UserPageResponseDto getFollowerList(String username, int size, int page) {
+    public UserPagingDto getFollowerList(String username, int size, int page) {
         User nUser = userRepository.findById(username);
         Long userId = nUser.getUserId();
         Map<String, Object> params = new HashMap<>();
@@ -147,10 +148,10 @@ public class UserService {
             userDto.setId(user.getId());
             userDtoList.add(userDto);
         }
-        UserPageResponseDto userPageResponseDto = new UserPageResponseDto();
-        userPageResponseDto.setUsers(userDtoList);
-        userPageResponseDto.setUserCnt(total);
-        return userPageResponseDto;
+        UserPagingDto userPagingDto = new UserPagingDto();
+        userPagingDto.setUsers(userDtoList);
+        userPagingDto.setUserCnt(total);
+        return userPagingDto;
     }
 
     public boolean flwerDelete(String username) {
@@ -164,5 +165,18 @@ public class UserService {
                 .build();
         followingRepository.deleteByFlw(follow);
         return true;
+    }
+
+    public UserPageDto getUserPage(String username) {
+        User user = userRepository.findById(username);
+        Long userId = user.getUserId();
+
+        long following = followingRepository.flwingTotal(userId);
+        long follower = followingRepository.flwerTotal(userId);
+
+        return UserPageDto.builder()
+                .followers(follower)
+                .following(following)
+                .build();
     }
 }

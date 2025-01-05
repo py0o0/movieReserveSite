@@ -1,7 +1,8 @@
 package com.example.moviecommu.controller;
 
 import com.example.moviecommu.dto.UserDto;
-import com.example.moviecommu.dto.UserPageResponseDto;
+import com.example.moviecommu.dto.UserPageDto;
+import com.example.moviecommu.dto.UserPagingDto;
 import com.example.moviecommu.service.UserService;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,6 @@ public class UserController {
     @GetMapping("/do")
     public String doUser() {
         return userUtil.getCurrentUserRole();
-    }
-
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin";
     }
 
     @PostMapping("/join")
@@ -62,13 +54,18 @@ public class UserController {
     }
 
     @GetMapping("/followingList") //사용자 ID를 주면 사용자의 팔로잉 정보 제공
-    public UserPageResponseDto getFollowingList(String username,int size, int page) {
+    public UserPagingDto getFollowingList(String username, int size, int page) {
         return userService.getFollowingList(username,size, page);
     }
 
     @GetMapping("/followerList") //사용자의 ID를 주면 사용자의 팔로우 정보 제공
-    public UserPageResponseDto getFollowerList(String username,int size, int page) {
+    public UserPagingDto getFollowerList(String username, int size, int page) {
         return userService.getFollowerList(username,size, page);
+    }
+
+    @GetMapping("/userPage") //유저네임 인풋, 유저 페이지 접속 시 팔로잉,팔로워 수 반환
+    public UserPageDto getUserPage(String username){
+        return userService.getUserPage(username);
     }
 
 }

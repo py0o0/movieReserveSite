@@ -1,17 +1,14 @@
 package com.example.moviecommu.controller;
 
 import com.example.moviecommu.dto.UserDto;
-import com.example.moviecommu.dto.UserPageResponseDto;
+import com.example.moviecommu.dto.UserPagingDto;
 import com.example.moviecommu.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -20,7 +17,7 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping("/userManage")
-    public UserPageResponseDto userManage(int size, int page){
+    public UserPagingDto userManage(int size, int page){
         return userService.getAll(size,page);
     }
 

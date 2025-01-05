@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class UserPageResponseDto {
+public class UserPagingDto {
     private Long userCnt;
     private List<UserDto> users;
 }
