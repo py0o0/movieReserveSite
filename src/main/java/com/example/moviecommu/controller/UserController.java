@@ -63,4 +63,9 @@ public class UserController {
         return userService.getFollowingList(username,size, page);
     }
 
+    @GetMapping("/followerList") //사용자의 ID를 주면 사용자의 팔로우 정보 제공
+    public UserPageResponseDto getFollowerList(String username,int size, int page) {
+        return userService.getFollowerList(username,size, page);
+    }
+
 }

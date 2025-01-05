@@ -15,7 +15,11 @@ public interface FollowingRepository {
 
     void deleteByFlw(Following follow); // 팔로잉 삭제
 
-    long flwingTotal(Long userId); //유저가 팔로잉 한 총 수
+    long flwingTotal(Long userId); //유저의 팔로잉 수
 
-    List<User> findByUserId(Map<String, Object> params); //유저의 팔로잉 정보 추출(페이징)
+    List<User> findFlwingByUserId(Map<String, Object> params); //유저의 팔로잉 정보 추출(페이징)
+
+    long flwerTotal(Long userId); // 유저의 팔로우 수
+
+    List<User> findFlwerByUserId(Map<String, Object> params); //유저의 팔로우 정보 추출(페이징)
 }

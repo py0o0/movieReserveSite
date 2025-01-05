@@ -20,10 +20,19 @@
         select count(*) from flw_table where userId=#{userId}
     </select>
 
-    <select id="findByUserId" resultType="User">
+    <select id="findFlwingByUserId" resultType="User">
         select * from user_table where user_table.userId in
                                        (select flwingId from flw_table where flw_table.userId=#{userId})
-                           order by 1 desc
-        Limit #{page},#{size}
+        order by 1 desc Limit #{page},#{size}
+    </select>
+
+    <select id="flwerTotal" parameterType="Long" resultType="Long">
+        select count(*) from flw_table where flwingId=#{userId}
+    </select>
+
+    <select id="findFlwerByUserId" resultType="User">
+        select * from user_table where user_table.userId in
+                                 (select flw_table.userId from flw_table where flwingId=#{userId})
+        order by 1 desc Limit #{page},#{size}
     </select>
 </mapper>

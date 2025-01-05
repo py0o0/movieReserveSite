@@ -113,7 +113,7 @@ public class UserService {
         params.put("userId", userId);
 
         long total = followingRepository.flwingTotal(userId);
-        List<User> flwList = followingRepository.findByUserId(params);
+        List<User> flwList = followingRepository.findFlwingByUserId(params);
 
         List<UserDto> userDtoList = new ArrayList<>();
         for (User user : flwList) {
@@ -126,6 +126,30 @@ public class UserService {
         userPageResponseDto.setUsers(userDtoList);
         userPageResponseDto.setUserCnt(total);
 
+        return userPageResponseDto;
+    }
+
+    public UserPageResponseDto getFollowerList(String username, int size, int page) {
+        User nUser = userRepository.findById(username);
+        Long userId = nUser.getUserId();
+        Map<String, Object> params = new HashMap<>();
+        page = size * page;
+        params.put("size", size);
+        params.put("page", page);
+        params.put("userId", userId);
+
+        long total = followingRepository.flwerTotal(userId);
+        List<User> flwList = followingRepository.findFlwerByUserId(params);
+
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : flwList) {
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDtoList.add(userDto);
+        }
+        UserPageResponseDto userPageResponseDto = new UserPageResponseDto();
+        userPageResponseDto.setUsers(userDtoList);
+        userPageResponseDto.setUserCnt(total);
         return userPageResponseDto;
     }
 }
