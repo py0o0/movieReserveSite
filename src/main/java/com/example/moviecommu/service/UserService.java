@@ -152,4 +152,17 @@ public class UserService {
         userPageResponseDto.setUserCnt(total);
         return userPageResponseDto;
     }
+
+    public boolean flwerDelete(String username) {
+        Long userId = userUtil.getCurrentUsername();
+        User user = userRepository.findById(username);
+        if(userId==null || user==null) return false;
+
+        Following follow = Following.builder()
+                .userId(user.getUserId())
+                .flwingId(userId)
+                .build();
+        followingRepository.deleteByFlw(follow);
+        return true;
+    }
 }
