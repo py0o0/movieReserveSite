@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserUtil {
-    public String getCurrentUsername() {
+    public Long getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null; // 인증되지 않은 사용자 처리
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();  // username 반환
+        return Long.parseLong(userDetails.getUsername());  // username 반환
     }
 
     public String getCurrentUserRole() {

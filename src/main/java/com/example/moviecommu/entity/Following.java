@@ -14,14 +14,14 @@ import lombok.*;
 public class Following {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long flwId;
 
-    private String userId;
-    private String flwName;
+    private Long userId;
+    private Long flwingId;
 
     @Builder
-    public Following(String userId, String flwName) {
+    public Following(Long userId, Long flwingId) {
         this.userId = userId;
-        this.flwName = flwName;
+        this.flwingId = flwingId;
     }
 }

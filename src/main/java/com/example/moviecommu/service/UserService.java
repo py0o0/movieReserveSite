@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +38,10 @@ public class UserService {
     }
 
     public boolean delete(String username) {
-        if(!username.equals(userUtil.getCurrentUsername()) && !userUtil.getCurrentUserRole().equals("ROLE_ADMIN"))
-            return false;
         User user = userRepository.findById(username);
         if(user==null)
+            return false;
+        if(!Objects.equals(user.getUserId(), userUtil.getCurrentUsername()) && !userUtil.getCurrentUserRole().equals("ROLE_ADMIN"))
             return false;
         userRepository.deleteById(username);
         return true;
@@ -90,13 +87,13 @@ public class UserService {
 
     public boolean follow(String username) {
         User following = userRepository.findById(username);
-        String user = userUtil.getCurrentUsername();
-        if(user == null || following == null)
+        Long userId = userUtil.getCurrentUsername();
+        if(userId == null || following == null || userId.equals(following.getUserId()))
             return false;
 
         Following follow = Following.builder()
-                .userId(user)
-                .flwName(following.getId())
+                .userId(userId)
+                .flwingId(following.getUserId())
                 .build();
         if(followingRepository.findByFlw(follow) == 0)
             followingRepository.save(follow);
@@ -104,16 +101,18 @@ public class UserService {
         return true;
     }
 
-    public UserPageResponseDto getFollowingList(int size, int page) {
-        Map<String, Object> params = new HashMap<>();
-        String userId = userUtil.getCurrentUsername();
+    public UserPageResponseDto getFollowingList(String username,int size, int page) {
+        User nUser = userRepository.findById(username);
+        Long userId = nUser.getUserId();
 
+        Map<String, Object> params = new HashMap<>();
         page = size * page;
+
         params.put("size", size);
         params.put("page", page);
         params.put("userId", userId);
 
-        long total = followingRepository.flwTotal(userId);
+        long total = followingRepository.flwingTotal(userId);
         List<User> flwList = followingRepository.findByUserId(params);
 
         List<UserDto> userDtoList = new ArrayList<>();

@@ -4,25 +4,25 @@
 
 <mapper namespace="com.example.moviecommu.repository.FollowingRepository">
    <insert id="save" parameterType="Flw">
-       insert into flw_table(userId,flwName)
-       values(#{userId},#{flwName})
+       insert into flw_table(userId,flwingId)
+       values(#{userId},#{flwingId})
    </insert>
 
     <select id="findByFlw" parameterType="Flw" resultType="Integer">
-        select count(*) from flw_table where userId=#{userId} and flwName=#{flwName}
+        select count(*) from flw_table where userId=#{userId} and flwingId=#{flwingId}
     </select>
 
     <delete id="deleteByFlw" parameterType="Flw">
-        delete from flw_table where userId=#{userId} and flwName=#{flwName}
+        delete from flw_table where userId=#{userId} and flwingId=#{flwingId}
     </delete>
 
-    <select id="flwTotal" parameterType="String" resultType="Long">
+    <select id="flwingTotal" parameterType="Long" resultType="Long">
         select count(*) from flw_table where userId=#{userId}
     </select>
 
     <select id="findByUserId" resultType="User">
-        select * from user_table where user_table.id in
-                                       (select flwName from flw_table where flw_table.userId=#{userId})
+        select * from user_table where user_table.userId in
+                                       (select flwingId from flw_table where flw_table.userId=#{userId})
                            order by 1 desc
         Limit #{page},#{size}
     </select>

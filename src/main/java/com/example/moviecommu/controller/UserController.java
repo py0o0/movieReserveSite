@@ -58,9 +58,9 @@ public class UserController {
         return ResponseEntity.badRequest().body("follow failed");
     }
 
-    @GetMapping("/followList")
-    public UserPageResponseDto getFollowingList(int size, int page) {
-        return userService.getFollowingList(size, page);
+    @GetMapping("/followingList") //사용자 ID를 주면 사용자의 팔로잉 정보 제공
+    public UserPageResponseDto getFollowingList(String username,int size, int page) {
+        return userService.getFollowingList(username,size, page);
     }
 
 }
