@@ -5,5 +5,7 @@
     <typeAliases>
         <typeAlias type="com.example.moviecommu.entity.User" alias="User"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.Following" alias="Flw"></typeAlias>
+        <typeAlias type="com.example.moviecommu.entity.Schedule" alias="Schedule"></typeAlias>
+        <typeAlias type="com.example.moviecommu.entity.Hall" alias="Hall"></typeAlias>
     </typeAliases>
 </configuration>
