@@ -10,4 +10,13 @@
     <select id="findBySId" parameterType="Long" resultType="String">
         select seatId from reserve where scheduleId=#{scheduleId}
     </select>
+
+    <insert id="save" parameterType="Reserve">
+        INSERT INTO reserve (method, amount, pDate, scheduleId, seatId,userId) VALUES
+            (#{method}, #{amount}, #{pDate}, #{scheduleId}, #{seatId},#{userId})
+    </insert>
+
+    <select id="findBySeatId" parameterType="Reserve" resultType="Integer">
+        select count(*) from reserve where scheduleId=#{scheduleId} and seatId=#{seatId}
+    </select>
 </mapper>
