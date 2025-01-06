@@ -8,6 +8,7 @@ import com.example.moviecommu.entity.Reserve;
 import com.example.moviecommu.entity.Schedule;
 import com.example.moviecommu.repository.HallRepository;
 import com.example.moviecommu.repository.ReserveRepository;
+import com.example.moviecommu.repository.ScheduleRepository;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,13 @@ public class ReserveService {
     private final ReserveRepository reserveRepository;
     private final HallRepository hallRepository;
     private final UserUtil userUtil;
+    private final ScheduleRepository scheduleRepository;
 
     public List<ScheduleHallDto> schedule(int movieId) {
 
         //영화 Id 확인해서 예매가능한지 로직 추가 널 반환하게
         List<ScheduleHallDto> scheduleHallDtos = new ArrayList<>();
-        List<Schedule> scheduleInfo = reserveRepository.findByMovieId(movieId);
+        List<Schedule> scheduleInfo = scheduleRepository.findByMovieId(movieId);
 
         for(Schedule schedule : scheduleInfo) {
             Hall hall = hallRepository.findByHallId(schedule.getHallId());
@@ -62,7 +64,7 @@ public class ReserveService {
                 .scheduleId(reserveDto.getScheduleId())
                 .build();
         //해당 스케쥴 아이디 가서 해당 좌석 검색 결과 있을 시 false 처리 하셈
-        if(reserveRepository.findBySeatId(reserve)!=0) //해당 자리
+        if(reserveRepository.findBySeatId(reserve)!=0 || scheduleRepository.findBySId(reserve.getScheduleId()) == 0) //해당 자리
             return false;
 
         reserveRepository.save(reserve);
