@@ -1,5 +1,6 @@
 package com.example.moviecommu.controller;
 
+import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.dto.ScheduleHallDto;
 import com.example.moviecommu.service.ReserveService;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,10 @@ public class ReserveController {
     @GetMapping("/schedule")
     public List<ScheduleHallDto> schedule(int movieId) {
         return reserveService.schedule(movieId);
+    }
+
+    @GetMapping("/reservedSeat")
+    public List<ReservedSeatDto> reservedSeat(long scheduleId) {
+        return reserveService.reservedSeat(scheduleId);
     }
 }

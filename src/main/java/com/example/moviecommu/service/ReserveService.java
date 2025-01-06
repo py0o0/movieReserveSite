@@ -1,7 +1,9 @@
 package com.example.moviecommu.service;
 
+import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.dto.ScheduleHallDto;
 import com.example.moviecommu.entity.Hall;
+import com.example.moviecommu.entity.Reserve;
 import com.example.moviecommu.entity.Schedule;
 import com.example.moviecommu.repository.HallRepository;
 import com.example.moviecommu.repository.ReserveRepository;
@@ -39,5 +41,10 @@ public class ReserveService {
             scheduleHallDtos.add(scheduleHallDto);
         }
         return scheduleHallDtos;
+    }
+
+    public List<ReservedSeatDto> reservedSeat(long scheduleId) {
+        List<ReservedSeatDto> reserve = reserveRepository.findBySId(scheduleId);
+        return reserve;
     }
 }

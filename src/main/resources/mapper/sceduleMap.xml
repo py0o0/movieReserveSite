@@ -6,4 +6,8 @@
     <select id="findByMovieId" parameterType="Integer" resultType="Schedule">
         select * from schedule where movieId=#{movieId}
     </select>
+
+    <select id="findBySId" parameterType="Long" resultType="String">
+        select seatId from reserve where scheduleId=#{scheduleId}
+    </select>
 </mapper>
