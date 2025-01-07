@@ -27,7 +27,7 @@ public class ReserveService {
     public List<ScheduleHallDto> schedule(int movieId) {
 
         //영화 Id 확인해서 예매가능한지 로직 추가 널 반환하게
-        List<ScheduleHallDto> scheduleHallDtos = new ArrayList<>();
+        List<ScheduleHallDto> scheduleHallDtoList = new ArrayList<>();
         List<Schedule> scheduleInfo = scheduleRepository.findByMovieId(movieId);
 
         for(Schedule schedule : scheduleInfo) {
@@ -39,13 +39,12 @@ public class ReserveService {
                     .movieId(schedule.getMovieId())
                     .name(hall.getName())
                     .price(hall.getPrice())
-                    .session(schedule.getSession())
                     .scheduleId(schedule.getScheduleId())
                     .startTime(schedule.getStartTime())
                     .build();
-            scheduleHallDtos.add(scheduleHallDto);
+            scheduleHallDtoList.add(scheduleHallDto);
         }
-        return scheduleHallDtos;
+        return scheduleHallDtoList;
     }
 
     public List<ReservedSeatDto> reservedSeat(long scheduleId) {

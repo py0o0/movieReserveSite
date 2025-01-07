@@ -11,7 +11,6 @@ public class Schedule {
     private long scheduleId;
     private long hallId;
     private int movieId;
-    private int session;
     private String startTime;
     private String date;
     private String day;
