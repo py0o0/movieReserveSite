@@ -17,25 +17,24 @@ import java.util.List;
 public class ReserveController {
     private final ReserveService reserveService;
 
-    @GetMapping("/schedule")
+    @GetMapping("/schedule") //인풋으로 받은 movieId의 스케쥴 정보를 오늘 날짜 기준 5일 후 까지 출력
     public List<ScheduleHallDto> schedule(int movieId) {
         return reserveService.schedule(movieId);
     }
 
-    @GetMapping("/reservedSeat")
+    @GetMapping("/reservedSeat") //선택한 스케쥴에 이미 예매된 좌석 출력
     public List<ReservedSeatDto> reservedSeat(long scheduleId) {
         return reserveService.reservedSeat(scheduleId);
     }
 
-    @PostMapping("/reserve")
+    @PostMapping("/reserve") //예매
     public ResponseEntity<String> reserve(ReserveDto reserveDto){
         if(reserveService.reserve(reserveDto))
             return ResponseEntity.ok("Reserved Successfully");
         return ResponseEntity.badRequest().body("Reservation Failed");
     }
 
-    //예매 취소기능만 input:좌석 번호, 스케쥴 Id , 유저Id는 로그인된놈꺼 쓸거임
-    @PostMapping("/reserve/delete")
+    @PostMapping("/reserve/delete") //예매취소
     public ResponseEntity<String> reserveDelete(String seatId, long scheduleId){
         if(reserveService.reserveDelete(seatId, scheduleId))
             return ResponseEntity.ok("ReservedDelete Successfully");

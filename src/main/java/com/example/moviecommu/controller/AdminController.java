@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final UserService userService;
 
-    @GetMapping("/userManage")
+    @GetMapping("/userManage") //유저 전체 목록 출력 (페이징) (어드민이 유저 목록 띄워서 관리하는 기능 ex) 강퇴)
     public UserPagingDto userManage(int size, int page){
         return userService.getAll(size,page);
     }
 
-    @PostMapping("/join")
+    @PostMapping("/join") //어드민 계정 생성
     public ResponseEntity<String> join(UserDto userDto) {
         if (userService.adminJoin(userDto))
             return ResponseEntity.ok("joined");
