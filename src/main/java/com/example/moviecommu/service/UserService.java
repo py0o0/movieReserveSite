@@ -64,6 +64,7 @@ public class UserService {
         for (User user : userList) {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
             userDtoList.add(userDto);
         }
 
