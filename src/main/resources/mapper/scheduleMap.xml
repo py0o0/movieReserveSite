@@ -4,7 +4,10 @@
 
 <mapper namespace="com.example.moviecommu.repository.ScheduleRepository">
     <select id="findByMovieId" parameterType="Integer" resultType="Schedule">
-        select * from schedule where movieId=#{movieId}
+        select * from schedule
+                 where movieId=#{movieId}
+                 AND date >= CURRENT_DATE
+                 AND DATE_ADD(CURRENT_DATE, INTERVAL 3 DAY) >= date
     </select>
 
     <select id="findBySId" parameterType="Long" resultType="Integer">
