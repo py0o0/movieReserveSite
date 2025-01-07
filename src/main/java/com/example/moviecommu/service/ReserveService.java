@@ -1,5 +1,6 @@
 package com.example.moviecommu.service;
 
+import com.example.moviecommu.dto.MyReserveDto;
 import com.example.moviecommu.dto.ReserveDto;
 import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.dto.ScheduleHallDto;
@@ -57,17 +58,26 @@ public class ReserveService {
         Reserve reserve = Reserve.builder()
                 .amount(reserveDto.getAmount())
                 .method(reserveDto.getMethod())
-                .pDate(reserveDto.getPDate())
+                //.pDate(reserveDto.getPDate())
                 .userId(userId)
                 .seatId(reserveDto.getSeatId())
                 .scheduleId(reserveDto.getScheduleId())
                 .build();
-        //해당 스케쥴 아이디 가서 해당 좌석 검색 결과 있을 시 false 처리 하셈
         if(reserveRepository.findBySeatId(reserve)!=0 || scheduleRepository.findBySId(reserve.getScheduleId()) == 0) //해당 자리
             return false;
 
         reserveRepository.save(reserve);
 
         return true;
+    }
+
+    public List<MyReserveDto> getMyReserve() {
+        Long userId = userUtil.getCurrentUsername();
+        return reserveRepository.findByMyReserveLast(userId);
+    }
+
+    public List<MyReserveDto> getMyReservePrevios() {
+        Long userId = userUtil.getCurrentUsername();
+        return reserveRepository.findByMyReservePrevious(userId);
     }
 }

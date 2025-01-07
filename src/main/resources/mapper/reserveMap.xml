@@ -8,11 +8,29 @@
     </select>
 
     <insert id="save" parameterType="Reserve">
-        INSERT INTO reserve (method, amount, pDate, scheduleId, seatId,userId) VALUES
-            (#{method}, #{amount}, #{pDate}, #{scheduleId}, #{seatId},#{userId})
+        INSERT INTO reserve (method, amount,  scheduleId, seatId,userId) VALUES
+            (#{method}, #{amount},  #{scheduleId}, #{seatId},#{userId})
     </insert>
 
     <select id="findBySeatId" parameterType="Reserve" resultType="Integer">
         select count(*) from reserve where scheduleId=#{scheduleId} and seatId=#{seatId}
+    </select>
+
+    <select id="findByMyReserveLast" parameterType="Long" resultType="MyReserve">
+        SELECT r.*, s.*, h.*
+        FROM reserve r
+        JOIN schedule s ON r.scheduleId = s.scheduleId
+        JOIN hall h ON s.hallId = h.hallId
+        WHERE r.userId = #{userId}
+        AND  s.date >= CURRENT_DATE
+    </select>
+
+    <select id="findByMyReservePrevious" parameterType="Long" resultType="MyReserve">
+        SELECT r.*, s.*, h.*
+        FROM reserve r
+                 JOIN schedule s ON r.scheduleId = s.scheduleId
+                 JOIN hall h ON s.hallId = h.hallId
+        WHERE r.userId = #{userId}
+          AND CURRENT_DATE > s.date
     </select>
 </mapper>

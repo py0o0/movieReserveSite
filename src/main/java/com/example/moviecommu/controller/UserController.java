@@ -1,8 +1,7 @@
 package com.example.moviecommu.controller;
 
-import com.example.moviecommu.dto.UserDto;
-import com.example.moviecommu.dto.UserPageDto;
-import com.example.moviecommu.dto.UserPagingDto;
+import com.example.moviecommu.dto.*;
+import com.example.moviecommu.service.ReserveService;
 import com.example.moviecommu.service.UserService;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserUtil userUtil;
     private final UserService userService;
+    private final ReserveService reserveService;
 
     @GetMapping("/do")
     public String doUser() {
@@ -69,6 +71,16 @@ public class UserController {
     @GetMapping("/userPage") //유저네임 인풋, 유저 페이지 접속 시 팔로잉,팔로워 수 반환
     public UserPageDto getUserPage(String username){
         return userService.getUserPage(username);
+    }
+
+    @GetMapping("/myReserve") // 나의 예매 내역 보기 (상영 날짜 지난 정보는 보여주지 않음)
+    public List<MyReserveDto> getMyReserve(){
+        return reserveService.getMyReserve();
+    }
+
+    @GetMapping("/myReservePrevious") // 나의 예매 내역 보기 (상영 날짜 지난 정보만 보여줌)
+    public List<MyReserveDto> getMyReservePrevios(){
+        return reserveService.getMyReservePrevios();
     }
 
 }

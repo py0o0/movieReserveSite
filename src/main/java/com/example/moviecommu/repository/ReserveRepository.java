@@ -1,4 +1,5 @@
 package com.example.moviecommu.repository;
+import com.example.moviecommu.dto.MyReserveDto;
 import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.entity.Reserve;
 import com.example.moviecommu.entity.Schedule;
@@ -15,4 +16,8 @@ public interface ReserveRepository {
     void save(Reserve reserve);
 
     int findBySeatId(Reserve reserve);
+
+    List<MyReserveDto> findByMyReserveLast(Long userId);
+
+    List<MyReserveDto> findByMyReservePrevious(Long userId);
 }
