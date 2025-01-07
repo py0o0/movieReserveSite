@@ -32,6 +32,9 @@ public class UserService {
                 .id(userDto.getId())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_USER")
+                .birth(userDto.getBirth())
+                .phone(userDto.getPhone())
+                .nickname(userDto.getNickname())
                 .build();
 
         userRepository.saveUser(nUser);
@@ -80,6 +83,9 @@ public class UserService {
                 .id(userDto.getId())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_ADMIN")
+                .birth(userDto.getBirth())
+                .phone(userDto.getPhone())
+                .nickname(userDto.getNickname())
                 .build();
 
         userRepository.saveUser(nUser);
@@ -178,5 +184,22 @@ public class UserService {
                 .followers(follower)
                 .following(following)
                 .build();
+    }
+
+    public boolean update(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId());
+        System.out.println(user);
+        if(user == null)
+            return false;
+
+        User nUser = User.builder()
+                .id(userDto.getId())
+                .birth(userDto.getBirth())
+                .phone(userDto.getPhone())
+                .nickname(userDto.getNickname())
+                .build();
+
+        userRepository.update(nUser);
+        return true;
     }
 }

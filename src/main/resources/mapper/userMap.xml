@@ -8,8 +8,8 @@
     </select>
 
     <insert id="saveUser" parameterType="User">
-        insert into user_table (id, password, role)
-        values (#{id},#{password},#{role})
+        insert into user_table (id, password, role,nickname, birth, phone)
+        values (#{id},#{password},#{role},#{nickname},#{birth},#{phone})
     </insert>
 
     <delete id="deleteById" parameterType="String">
@@ -24,4 +24,8 @@
     <select id="userTotal" resultType="Long">
         select count(*) from user_table
     </select>
+
+    <update id="update" parameterType="User">
+        update user_table set nickname=#{nickname}, birth=#{birth}, phone=#{phone} where id=#{id}
+    </update>
 </mapper>

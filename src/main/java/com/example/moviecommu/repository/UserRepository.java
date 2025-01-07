@@ -18,4 +18,6 @@ public interface UserRepository {
     List<User> getAll(Map<String, Object> params); //유저 목록 추출(페이징)
 
     long userTotal(); //유저의 총 수
+
+    void update(User nUser);
 }

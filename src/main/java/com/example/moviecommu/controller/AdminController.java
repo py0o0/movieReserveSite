@@ -22,15 +22,9 @@ public class AdminController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<String> join(String username, String password) {
-        UserDto userDto = new UserDto();
-        userDto.setId(username);
-        userDto.setPassword(password);
-
-        if(userService.adminJoin(userDto)){
+    public ResponseEntity<String> join(UserDto userDto) {
+        if (userService.adminJoin(userDto))
             return ResponseEntity.ok("joined");
-        }
-        else
-            return ResponseEntity.badRequest().body("join failed");
+        return ResponseEntity.badRequest().body("join failed");
     }
 }

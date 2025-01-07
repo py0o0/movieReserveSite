@@ -23,14 +23,17 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<String> join(String username, String password) {
-        UserDto userDto = new UserDto();
-        userDto.setId(username);
-        userDto.setPassword(password);
-
+    public ResponseEntity<String> join(UserDto userDto) {
         if(userService.join(userDto))
             return ResponseEntity.ok("joined");
         return ResponseEntity.badRequest().body("join failed");
+    }
+
+    @PostMapping("user/update")
+    public ResponseEntity<String> update(UserDto userDto) {
+        if(userService.update(userDto))
+            return ResponseEntity.ok("updated");
+        return ResponseEntity.badRequest().body("update failed");
     }
 
     @PostMapping("/user/delete") //삭제할 유저네임 인풋
