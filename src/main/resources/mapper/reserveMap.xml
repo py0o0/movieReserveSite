@@ -33,4 +33,12 @@
         WHERE r.userId = #{userId}
           AND CURRENT_DATE > s.date
     </select>
+
+    <select id="isReserved" parameterType="reserve" resultType="Integer">
+        select count(*) from reserve where userId=#{userId} and seatId=#{seatId} and scheduleId=#{scheduleId}
+    </select>
+
+    <delete id="reserveDelete" parameterType="reserve">
+        delete from reserve where userId=#{userId} and seatId=#{seatId} and scheduleId=#{scheduleId}
+    </delete>
 </mapper>

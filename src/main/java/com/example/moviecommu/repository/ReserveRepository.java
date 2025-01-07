@@ -20,4 +20,8 @@ public interface ReserveRepository {
     List<MyReserveDto> findByMyReserveLast(Long userId);
 
     List<MyReserveDto> findByMyReservePrevious(Long userId);
+
+    int isReserved(Reserve reserve);
+
+    void reserveDelete(Reserve reserve);
 }

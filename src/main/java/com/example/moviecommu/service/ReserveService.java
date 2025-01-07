@@ -80,4 +80,19 @@ public class ReserveService {
         Long userId = userUtil.getCurrentUsername();
         return reserveRepository.findByMyReservePrevious(userId);
     }
+
+    public boolean reserveDelete(String seatId, long scheduleId) {
+        long userId = userUtil.getCurrentUsername();
+        Reserve reserve = Reserve.builder()
+                .seatId(seatId)
+                .scheduleId(scheduleId)
+                .userId(userId)
+                .build();
+
+        if(reserveRepository.isReserved(reserve) == 0)
+            return false;
+        reserveRepository.reserveDelete(reserve);
+        return true;
+
+    }
 }

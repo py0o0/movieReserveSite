@@ -33,4 +33,12 @@ public class ReserveController {
             return ResponseEntity.ok("Reserved Successfully");
         return ResponseEntity.badRequest().body("Reservation Failed");
     }
+
+    //예매 취소기능만 input:좌석 번호, 스케쥴 Id , 유저Id는 로그인된놈꺼 쓸거임
+    @PostMapping("/reserve/delete")
+    public ResponseEntity<String> reserveDelete(String seatId, long scheduleId){
+        if(reserveService.reserveDelete(seatId, scheduleId))
+            return ResponseEntity.ok("ReservedDelete Successfully");
+        return ResponseEntity.badRequest().body("ReservedDelete Failed");
+    }
 }
