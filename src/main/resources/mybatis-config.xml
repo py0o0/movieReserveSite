@@ -8,5 +8,6 @@
         <typeAlias type="com.example.moviecommu.entity.Schedule" alias="Schedule"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.Hall" alias="Hall"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.Reserve" alias="Reserve"></typeAlias>
+        <typeAlias type="com.example.moviecommu.dto.MyReserveDto" alias="MyReserve"></typeAlias>
     </typeAliases>
 </configuration>
