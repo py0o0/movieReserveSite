@@ -6,10 +6,11 @@ import com.example.moviecommu.service.UserService;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,6 +19,14 @@ public class UserController {
     private final UserUtil userUtil;
     private final UserService userService;
     private final ReserveService reserveService;
+
+    @PostMapping("/test")
+    public void test( MultipartFile file) throws IOException {
+        String storedFileName=System.currentTimeMillis() + file.getOriginalFilename();
+        String savePath = "C:/Users/CSP/mini1/src/main/resources/img/" + storedFileName;
+        //"C:/file_upload_test/"
+        file.transferTo(new File(savePath));
+    }
 
     @GetMapping("/do")
     public String doUser() {

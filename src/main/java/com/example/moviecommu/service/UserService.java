@@ -203,4 +203,10 @@ public class UserService {
         userRepository.update(nUser);
         return true;
     }
+
+//    public void insertMovie(MovieDto moviedto) {
+//     무비 dto에 파일의 파일명을 storedFileName=System.currentTimeMillis() + file.getOriginalFilename(); 로 수정
+        // 무비 엔티티로 바꾼후 경로는  String savePath = "C:/file_upload_test/" + storedFileName; 수정 후 file.transferTo(new File(savePath));
+    //무비 save하심됨
+//    }
 }
