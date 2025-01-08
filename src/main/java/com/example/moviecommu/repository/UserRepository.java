@@ -3,6 +3,7 @@ package com.example.moviecommu.repository;
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
