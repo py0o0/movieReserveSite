@@ -27,19 +27,19 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}") //게시글 상세 조회, 나중에 댓글도 같이 전송
-    public ResponseEntity<?> getPost(@PathVariable Long id) {
-        return postService.getPostById(id);
+    @GetMapping("/{postId}") //게시글 상세 조회, 나중에 댓글도 같이 전송
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+        return postService.getPostById(postId);
     }
 
-    @PutMapping("/{id}") //수정
-    public ResponseEntity<?> updatePost(@PathVariable Long id, String title, String content) {
-        return postService.updatePost(id, title, content);
+    @PutMapping("/{postId}") //수정
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, String title, String content) {
+        return postService.updatePost(postId, title, content);
     }
 
-    @PostMapping("/{id}") //삭제
-    public void deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    @PostMapping("/{postId}") //삭제
+    public void deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
     }
 
     @PostMapping("/like")///좋아요
@@ -68,7 +68,7 @@ public class PostController {
         return postService.searchByContent(keyword, pageRequest);
     }
 
-    @GetMapping("/search/username")  // username으로 게시글 불러오기
+    @GetMapping("/search/username")  // username으로 게시글 불러오기 검색도 가능
     public ResponseEntity<?> searchByUsername(String username, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return postService.searchByUsername(username, pageRequest);
