@@ -27,60 +27,18 @@ public class MovieController {
     }
 
     @GetMapping("/movie")
-    public List<Movie> showMovieRank() {
-        List<MovieDto> movieDtoList = movieService.getTopTwenties();
-        List<Movie> movieList = new ArrayList<>();
-
-        movieDtoList.forEach(movieDto -> {
-            Movie movie = new Movie();
-            movie.setMovieId(movieDto.getMovieId());
-            movie.setTitle(movieDto.getTitle());
-            movie.setDes(movieDto.getDes());
-            movie.setCountry(movieDto.getCountry());
-            movie.setDirector(movieDto.getDirector());
-            movie.setCasting(movieDto.getCasting());
-            movie.setGenre(movieDto.getGenre());
-            movie.setRating(movieDto.getRating());
-            movie.setReleaseDate(movieDto.getReleaseDate());
-            movie.setAgeLimit(movieDto.getAgeLimit());
-            movie.setRunningTime(movieDto.getRunningTime());
-            movie.setOnAir(movieDto.getOnAir());
-            movie.setHeadCount(movieDto.getHeadCount());
-            movie.setPosterUrl(movieDto.getPosterUrl());
-            movieList.add(movie);
-        });
-
-        return movieList;
+    public List<MovieDto> showMovieRank() {
+        return movieService.getTopTwenties();
     }
 
-    @GetMapping("/movie/{id}")
+    @GetMapping(value = "/movie/{id}", produces = "application/json; charset=UTF-8")
     public String showMovieDetail(@PathVariable("id") Long id) throws JSONException {
-        Movie movie = new Movie();
         MovieDto movieDto = movieService.findByMovieId(id);
         List<ReviewDto> reviewDtoList = reviewService.findByMovieId(id);
-        List<Review> reviewList = new ArrayList<>();
-
-        movie.setMovieId(movieDto.getMovieId());
-        movie.setTitle(movieDto.getTitle());
-        movie.setDes(movieDto.getDes());
-        movie.setCountry(movieDto.getCountry());
-        movie.setDirector(movieDto.getDirector());
-        movie.setCasting(movieDto.getCasting());
-        movie.setGenre(movieDto.getGenre());
-        movie.setRating(movieDto.getRating());
-        movie.setReleaseDate(movieDto.getReleaseDate());
-        movie.setAgeLimit(movieDto.getAgeLimit());
-        movie.setRunningTime(movieDto.getRunningTime());
-        movie.setOnAir(movieDto.getOnAir());
-        movie.setHeadCount(movieDto.getHeadCount());
-        movie.setPosterUrl(movieDto.getPosterUrl());
 
         JSONObject json = new JSONObject();
-
-        JSONObject movieObj = new JSONObject(movie);
-        JSONArray reviewArray = new JSONArray(reviewDtoList);
-        json.put("movie", movieObj);
-        json.put("reviews", reviewArray);
+        json.put("movie", new JSONObject(movieDto));
+        json.put("reviews", new JSONArray(reviewDtoList));
 
         return json.toString();
     }
