@@ -9,64 +9,59 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    // 게시글 작성
-    @PostMapping("/write")
-    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto) {
-        postService.write(postDto);
+    @PostMapping("/write") //게시글 작성 이미지 파일들 첨부 가능
+    public ResponseEntity<Void> createPost(String title, String content, List<MultipartFile> files) throws IOException {
+        postService.write(title, content, files);
         return ResponseEntity.ok().build();
     }
 
-    // 게시글 목록 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<PostDto>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAll());
-    }
+    // 게시글 목록 조회@GetMapping("/list")
+    ////    public ResponseEntity<List<PostDto>> getAllPosts() {
+    ////        return ResponseEntity.ok(postService.getAll());
+    ////    }
+//
 
     // 게시글 상세 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPost(@PathVariable Long id) {
-        try {
-            PostDto postDto = postService.getPostById(id);
-            return ResponseEntity.ok(postDto);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}") //게시글 상세 조회, 나중에 댓글도 같이 전송
+    public ResponseEntity<?> getPost(@PathVariable Long id) {
+        return postService.getPostById(id);
     }
 
     // 게시글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        return ResponseEntity.ok(postService.updatePost(id, post));
+    @PutMapping("/{id}") //다듬기 완
+    public ResponseEntity<?> updatePost(@PathVariable Long id, String title, String content) {
+        return postService.updatePost(id, title, content);
     }
 
     // 게시글 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    @PostMapping("/{id}") //다듬기 완
+    public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.noContent().build();
     }
 
-    // 페이징 처리
-    @GetMapping("/list/page")
+    // 페이징 게시글 전체 조회
+    @GetMapping("/list/page") //이건 됨 근데 유저정보를 같이 반환하는걸 모르겟음 한신님하고 토론
     public ResponseEntity<Page<PostDto>> getPostsByPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardId"));
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postId"));
         return ResponseEntity.ok(postService.getPostsByPage(pageRequest));
     }
 
     // 제목으로 검색
-    @GetMapping("/search/title")
+    @GetMapping("/search/title") //이 밑으로 쭉안됨 내일 물어보고 다시 짜든가 해야될듯
     public ResponseEntity<Page<PostDto>> searchByTitle(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,

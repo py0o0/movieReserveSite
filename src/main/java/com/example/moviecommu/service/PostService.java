@@ -1,52 +1,91 @@
 package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.PostDto;
+import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.Post;
+import com.example.moviecommu.entity.PostFile;
+import com.example.moviecommu.entity.User;
+import com.example.moviecommu.repository.PostFileRepository;
 import com.example.moviecommu.repository.PostRepository;
+import com.example.moviecommu.repository.UserRepository;
+import com.example.moviecommu.util.UserUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
-    @Autowired
-    private PostRepository postRepository;
 
-    // 게시글 작성
-    public void write(PostDto postDto) {
+    private final PostRepository postRepository;
+    private final PostFileRepository postFileRepository;
+    private final UserUtil userUtil;
+    private final UserRepository userRepository;
+
+    // 다듬기 끝
+    public void write (String title, String content, List<MultipartFile> files) throws IOException {
+        long userId = userUtil.getCurrentUsername();
         Post post = Post.builder()
-                .userId(postDto.getUserId())
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
+                .title(title)
+                .content(content)
+                .userId(userId)
                 .build();
-        postRepository.save(post);
+
+        if(files == null) {
+            post = postRepository.save(post);
+            post.setFileAttached(0);
+        }
+        else {
+            post.setFileAttached(1);
+            post = postRepository.save(post);
+            System.out.println(post.getPostId());
+            for(MultipartFile file : files) {
+                String storedFileName = System.currentTimeMillis() + file.getOriginalFilename();
+                String savePath = "C:/file_upload_test/" + storedFileName;
+                file.transferTo(new File(savePath));
+
+                PostFile postFile = new PostFile();
+                postFile.setFilePath(savePath);
+                postFile.setPostId(post.getPostId());
+                postFileRepository.save(postFile);
+            }
+        }
+
     }
 
-    // 게시글 목록 조회
-    public List<PostDto> getAll() {
-        List<Post> postList = postRepository.findAll();
-        List<PostDto> postDtoList = new ArrayList<>();
-        for (Post post : postList) {
-            PostDto postDto = new PostDto();
-            postDto.setTitle(post.getTitle());
-            postDto.setContent(post.getContent());
-            postDto.setUserId(post.getUserId());
-            postDto.setCnt(post.getCnt());
-            postDto.setCreated(post.getCreated());
-            postDto.setHeart(post.getHeart());
-            postDtoList.add(postDto);
-        }
-        return postDtoList;
-    }
+//    // 게시글 목록 조회
+//    public List<PostDto> getAll() {
+//        List<Post> postList = postRepository.findAll();
+//        List<PostDto> postDtoList = new ArrayList<>();
+//        for (Post post : postList) {
+//            PostDto postDto = new PostDto();
+//            postDto.setTitle(post.getTitle());
+//            postDto.setContent(post.getContent());
+//            postDto.setUserId(post.getUserId());
+//            postDto.setCnt(post.getCnt());
+//            postDto.setCreated(post.getCreated());
+//            postDto.setHeart(post.getHeart());
+//            postDtoList.add(postDto);
+//        }
+//        return postDtoList;
+//    }
 
     // 게시글 상세 조회 및 조회수 증가
-    public PostDto getPostById(Long id) {
-        Optional<Post> optionalPost = postRepository.findById(id);
+    public ResponseEntity<?> getPostById(Long post_id) { // 다듬기 끗 댓글만 추가하셈
+        Optional<Post> optionalPost = postRepository.findById(post_id);
 
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
@@ -59,31 +98,52 @@ public class PostService {
             postDto.setCnt(post.getCnt());
             postDto.setCreated(post.getCreated());
             postDto.setHeart(post.getHeart());
+            postDto.setFileAttached(post.getFileAttached());
+
+            if(post.getFileAttached() == 1) {
+                List<String> filePath = new ArrayList<>();
+                List<PostFile> postFileList = postFileRepository.findByPostId(post_id);
+
+                for(PostFile postFile : postFileList) {
+                    filePath.add(postFile.getFilePath());
+                }
+                postDto.setFiles(filePath);
+
+            }
+            User user = userRepository.findByUserId(postDto.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
 
             // 조회수 증가
             post.setCnt(post.getCnt() + 1);
             postRepository.save(post);
 
-            return postDto;
+            return ResponseEntity.ok(Map.of(
+                    "post", postDto,
+                    "user", userDto
+            ));
+
         } else {
-            throw new RuntimeException("게시글을 찾을 수 없습니다. ID: " + id);
+            return ResponseEntity.badRequest().build();
         }
     }
 
     // 게시글 수정
-    public Post updatePost(Long id, Post postDetails) {
+    public ResponseEntity<?> updatePost(Long id,String title, String content) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다. ID: " + id));
+                .orElseThrow(() ->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
 
-        post.setTitle(postDetails.getTitle());
-        post.setContent(postDetails.getContent());
-        return postRepository.save(post);
+        post.setTitle(title);
+        post.setContent(content);
+        postRepository.save(post);
+        return ResponseEntity.ok(Map.of());
     }
 
     // 게시글 삭제
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다. ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
         postRepository.delete(post);
     }
 
@@ -131,4 +191,6 @@ public class PostService {
         dto.setHeart(post.getHeart());
         return dto;
     }
+
+
 }

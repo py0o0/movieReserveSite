@@ -21,4 +21,6 @@ public interface UserRepository {
     long userTotal(); //유저의 총 수
 
     void update(User nUser);
+
+    User findByUserId(long userId);
 }
