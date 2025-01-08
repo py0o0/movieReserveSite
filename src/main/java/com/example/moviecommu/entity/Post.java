@@ -30,4 +30,8 @@ public class Post {
         this.cnt = cnt;
         this.heart = heart;
     }
+
+    public Long getId() {
+        return 0L;
+    }
 }

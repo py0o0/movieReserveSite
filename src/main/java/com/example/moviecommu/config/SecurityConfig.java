@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity  // 은비추가
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -28,6 +31,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth->auth
                 .requestMatchers("/","/login","/join","/test").permitAll()
                 .requestMatchers("/","/login","/join","/test","/movie","/movie/**","/search/**").permitAll()
+                .requestMatchers("/api/comments/**").permitAll()  // 은비추가: 댓글 API 접근 허용
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
@@ -57,6 +61,12 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("Logged out successfully");
                 }));
+
+        // 은비추가: 세션 관리 정책
+        http.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
 
         return http.build();
     }
