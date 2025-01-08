@@ -6,6 +6,7 @@ import com.example.moviecommu.entity.Post;
 import com.example.moviecommu.entity.PostFile;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.PostFileRepository;
+import com.example.moviecommu.repository.PostLikeRepository;
 import com.example.moviecommu.repository.PostRepository;
 import com.example.moviecommu.repository.UserRepository;
 import com.example.moviecommu.util.UserUtil;
@@ -21,10 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +32,7 @@ public class PostService {
     private final PostFileRepository postFileRepository;
     private final UserUtil userUtil;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     // 다듬기 끝
     public void write (String title, String content, List<MultipartFile> files) throws IOException {
@@ -147,6 +146,29 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public void likePost(long postId, String username) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + postId + " not found"));
+
+        User user = userRepository.findById(username);
+        Long userId = user.getUserId();
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        map.put("postId",postId);
+
+        if(postLikeRepository.searchLike(map) == 0) {
+            postLikeRepository.save(map);
+            post.setHeart(post.getHeart() + 1);
+        }
+        else{
+            postLikeRepository.delete(map);
+            post.setHeart(post.getHeart() - 1);
+        }
+        postRepository.save(post);
+
+    }
+
     // 페이징 처리
     public Page<PostDto> getPostsByPage(PageRequest pageable) {
         Page<Post> postPage = postRepository.findAll(pageable);
@@ -191,6 +213,7 @@ public class PostService {
         dto.setHeart(post.getHeart());
         return dto;
     }
+
 
 
 }

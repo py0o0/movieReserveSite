@@ -51,6 +51,12 @@ public class PostController {
         postService.deletePost(id);
     }
 
+    @PostMapping("/like")
+    public void likePost(long postId, String username){
+        postService.likePost(postId, username);
+
+    }
+
     // 페이징 게시글 전체 조회
     @GetMapping("/list/page") //이건 됨 근데 유저정보를 같이 반환하는걸 모르겟음 한신님하고 토론
     public ResponseEntity<Page<PostDto>> getPostsByPage(
