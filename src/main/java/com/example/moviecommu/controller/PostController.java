@@ -27,72 +27,56 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    // 게시글 목록 조회@GetMapping("/list")
-    ////    public ResponseEntity<List<PostDto>> getAllPosts() {
-    ////        return ResponseEntity.ok(postService.getAll());
-    ////    }
-//
-
-    // 게시글 상세 조회
     @GetMapping("/{id}") //게시글 상세 조회, 나중에 댓글도 같이 전송
     public ResponseEntity<?> getPost(@PathVariable Long id) {
         return postService.getPostById(id);
     }
 
-    // 게시글 수정
-    @PutMapping("/{id}") //다듬기 완
+    @PutMapping("/{id}") //수정
     public ResponseEntity<?> updatePost(@PathVariable Long id, String title, String content) {
         return postService.updatePost(id, title, content);
     }
 
-    // 게시글 삭제
-    @PostMapping("/{id}") //다듬기 완
+    @PostMapping("/{id}") //삭제
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
     }
 
-    @PostMapping("/like")
+    @PostMapping("/like")///좋아요
     public void likePost(long postId, String username){
         postService.likePost(postId, username);
 
     }
 
-    // 페이징 게시글 전체 조회
-    @GetMapping("/list/page") //이건 됨 근데 유저정보를 같이 반환하는걸 모르겟음 한신님하고 토론
-    public ResponseEntity<Page<PostDto>> getPostsByPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postId"));
-        return ResponseEntity.ok(postService.getPostsByPage(pageRequest));
+    @GetMapping("/list/page") //게시글 전체조회
+    public ResponseEntity<?> getPostsByPage(int page, int size) {
+        PageRequest pageRequest =  PageRequest.of(page, size);
+        return postService.getPostsByPage(pageRequest);
     }
 
-    // 제목으로 검색
-    @GetMapping("/search/title") //이 밑으로 쭉안됨 내일 물어보고 다시 짜든가 해야될듯
-    public ResponseEntity<Page<PostDto>> searchByTitle(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/search/title")// 제목으로 검색
+    public ResponseEntity<?> searchByTitle(String keyword, int page, int size) {
+        System.out.println(keyword);
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchByTitle(keyword, pageRequest));
+        return postService.searchByTitle(keyword, pageRequest);
     }
 
-    // 내용으로 검색
-    @GetMapping("/search/content")
-    public ResponseEntity<Page<PostDto>> searchByContent(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+
+    @GetMapping("/search/content")// 내용으로 검색
+    public ResponseEntity<?> searchByContent(String keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchByContent(keyword, pageRequest));
+        return postService.searchByContent(keyword, pageRequest);
     }
 
-    // 제목 또는 내용으로 검색
-    @GetMapping("/search")
-    public ResponseEntity<Page<PostDto>> searchPosts(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/search/username")  // username으로 게시글 불러오기
+    public ResponseEntity<?> searchByUsername(String username, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchPosts(keyword, pageRequest));
+        return postService.searchByUsername(username, pageRequest);
+    }
+
+    @GetMapping("/search")  // 제목 또는 내용으로 검색
+    public ResponseEntity<?> searchPosts(String keyword, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return postService.searchPosts(keyword, pageRequest);
     }
 }

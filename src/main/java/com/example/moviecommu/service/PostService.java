@@ -34,7 +34,6 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
 
-    // 다듬기 끝
     public void write (String title, String content, List<MultipartFile> files) throws IOException {
         long userId = userUtil.getCurrentUsername();
         Post post = Post.builder()
@@ -65,23 +64,6 @@ public class PostService {
 
     }
 
-//    // 게시글 목록 조회
-//    public List<PostDto> getAll() {
-//        List<Post> postList = postRepository.findAll();
-//        List<PostDto> postDtoList = new ArrayList<>();
-//        for (Post post : postList) {
-//            PostDto postDto = new PostDto();
-//            postDto.setTitle(post.getTitle());
-//            postDto.setContent(post.getContent());
-//            postDto.setUserId(post.getUserId());
-//            postDto.setCnt(post.getCnt());
-//            postDto.setCreated(post.getCreated());
-//            postDto.setHeart(post.getHeart());
-//            postDtoList.add(postDto);
-//        }
-//        return postDtoList;
-//    }
-
     // 게시글 상세 조회 및 조회수 증가
     public ResponseEntity<?> getPostById(Long post_id) { // 다듬기 끗 댓글만 추가하셈
         Optional<Post> optionalPost = postRepository.findById(post_id);
@@ -89,8 +71,8 @@ public class PostService {
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
 
-            // DTO 변환
             PostDto postDto = new PostDto();
+            postDto.setPostId(post.getPostId());
             postDto.setUserId(post.getUserId());
             postDto.setTitle(post.getTitle());
             postDto.setContent(post.getContent());
@@ -114,7 +96,6 @@ public class PostService {
             userDto.setNickname(user.getNickname());
             userDto.setId(user.getId());
 
-            // 조회수 증가
             post.setCnt(post.getCnt() + 1);
             postRepository.save(post);
 
@@ -128,7 +109,6 @@ public class PostService {
         }
     }
 
-    // 게시글 수정
     public ResponseEntity<?> updatePost(Long id,String title, String content) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
@@ -139,7 +119,6 @@ public class PostService {
         return ResponseEntity.ok(Map.of());
     }
 
-    // 게시글 삭제
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
@@ -169,51 +148,105 @@ public class PostService {
 
     }
 
-    // 페이징 처리
-    public Page<PostDto> getPostsByPage(PageRequest pageable) {
+    public ResponseEntity<?> getPostsByPage(PageRequest pageable) {
         Page<Post> postPage = postRepository.findAll(pageable);
-        return postPage.map(this::convertToDto);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
     }
 
     // 제목으로 검색
-    public Page<PostDto> searchByTitle(String keyword, PageRequest pageable) {
+    public ResponseEntity<?> searchByTitle(String keyword, PageRequest pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new IllegalArgumentException("검색어는 비워둘 수 없습니다.");
+            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
         Page<Post> postPage = postRepository.findByTitleContaining(keyword, pageable);
-        return postPage.map(this::convertToDto);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
     }
 
     // 내용으로 검색
-    public Page<PostDto> searchByContent(String keyword, PageRequest pageable) {
+    public ResponseEntity<?> searchByContent(String keyword, PageRequest pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new IllegalArgumentException("검색어는 비워둘 수 없습니다.");
+            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
         Page<Post> postPage = postRepository.findByContentContaining(keyword, pageable);
-        return postPage.map(this::convertToDto);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
     }
 
     // 제목 또는 내용으로 검색
-    public Page<PostDto> searchPosts(String keyword, PageRequest pageable) {
+    public ResponseEntity<?> searchPosts(String keyword, PageRequest pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new IllegalArgumentException("검색어는 비워둘 수 없습니다.");
+            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
         Page<Post> postPage = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
-        return postPage.map(this::convertToDto);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
     }
 
-    // Post 엔티티를 PostDto로 변환하는 메서드
-    private PostDto convertToDto(Post post) {
-        PostDto dto = new PostDto();
-        dto.setUserId(post.getUserId());
-        dto.setTitle(post.getTitle());
-        dto.setContent(post.getContent());
-        dto.setCnt(post.getCnt());
-        dto.setCreated(post.getCreated());
-        dto.setHeart(post.getHeart());
-        return dto;
+    public ResponseEntity<?> searchByUsername(String username, PageRequest pageable) {
+        User nUser = userRepository.findById(username);
+        if (nUser == null) {
+            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 유저");
+        }
+        long userId = nUser.getUserId();
+        Page<Post> postPage = postRepository.findByUserId(userId, pageable);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
     }
-
-
-
 }

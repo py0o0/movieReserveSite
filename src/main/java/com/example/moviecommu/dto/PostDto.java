@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @ToString
 public class PostDto {
+    private long postId;
     private long userId;
     private String title;
     private String content;
