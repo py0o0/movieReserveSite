@@ -1,0 +1,22 @@
+package com.example.moviecommu.repository;
+
+import com.example.moviecommu.entity.Movie;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+    Movie findByMovieId(Long movieId);
+
+    Movie findByTitle(String title);
+
+    @Query("SELECT m FROM Movie m WHERE m.title LIKE CONCAT('%',:word,'%') OR m.director LIKE CONCAT('%',:word,'%') OR m.casting LIKE CONCAT('%',:word,'%')")
+    List<Movie> findByWord(@Param("word")String word);
+
+    @Query("SELECT m FROM Movie m ORDER BY m.rating DESC LIMIT 20")
+    List<Movie> findTopTwentyOrderByRatingDesc();
+}

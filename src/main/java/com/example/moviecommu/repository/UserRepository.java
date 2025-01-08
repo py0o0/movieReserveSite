@@ -2,6 +2,7 @@ package com.example.moviecommu.repository;
 
 import com.example.moviecommu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface UserRepository {
