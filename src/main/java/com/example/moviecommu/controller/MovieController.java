@@ -31,11 +31,11 @@ public class MovieController {
         return movieService.getTopTwenties();
     }
 
-    @GetMapping(value = "/movie/{id}", produces = "application/json; charset=UTF-8")
-    public String showMovieDetail(@PathVariable("id") Long id) throws JSONException {
+    @GetMapping(value = "/movie/{movieId}", produces = "application/json; charset=UTF-8")
+    public String showMovieDetail(@PathVariable("movieId") Long movieId) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("movie", new JSONObject(movieService.findByMovieId(id)));
-        json.put("reviews", new JSONArray(reviewService.findByMovieId(id)));
+        json.put("movie", new JSONObject(movieService.findByMovieId(movieId)));
+        json.put("reviews", new JSONArray(reviewService.findByMovieId(movieId)));
 
         return json.toString();
     }

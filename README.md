@@ -56,6 +56,33 @@
 
 ---
 
+## MovieController API
+
+| **Endpoint**             | **Method** | **Description**       | **Request Parameters**                                | **Response**                                           |
+|--------------------------|------------|-----------------------|-------------------------------------------------------|--------------------------------------------------------|
+| `/movie`                 | `GET`      | 영화 랭킹                 | 없음                                                    | `200 OK`: 성공 응답 반환                                     |
+| `/movie/{id}`            | `GET`      | 특정 영화 상세 페이지(리뷰 포함)   | `movieId` (Long)                                          | `200 OK`: 영화 상세 정보 및 리뷰 반환                             |
+
+---
+
+## ReviewController API
+
+| **Endpoint**         | **Method** | **Description**   | **Request Parameters**            | **Response**       |
+|----------------------|------------|-------------------|-----------------------------------|--------------------|
+| `/movie/{id}/write`  | `POST`     | 영화 상세 페이지 내 리뷰 작성 | `reviewDto`, `movieId` (Long)     | `200 OK`: 성공 응답 반환 |
+| `/movie/{id}/update` | `PUT`      | 리뷰 수정             | `reviewDto`, `movieId` (Long)     | `200 OK`: 영화 리뷰 수정 |
+| `/movie/{id}/delete` | `POST`     | 리뷰 삭제             | `userId` (Long), `movieId` (Long) | `200 OK`: 영화 리뷰 삭제 |
+
+---
+
+## SearchController API
+
+| **Endpoint**        | **Method** | **Description**   | **Request Parameters** | **Response**               |
+|---------------------|------------|-------------------|------------------------|----------------------------|
+| `/search/{word}`    | `GET`      | 통합검색(제목, 감독, 캐스팅) | `word` (String)        | `200 OK`: 성공 응답 반환         |
+
+---
+
 ## DTO 클래스 정의
 
 | **Class Name**         | **Field Name**     | **Type**           | **Description**                                     |
@@ -103,3 +130,5 @@
 |                        | `heart`            | `long`             | 게시글 좋아요 수                                    |
 |                        | `fileAttached`     | `int`              | 첨부 파일 개수                                      |
 |                        | `files`            | `List<String>`     | 첨부된 파일 목록                                    |
+| **PostDto**            | `postId`           | `long`             | 게시글 ID                                          |
+|                        | `userId`           | `long`             | 작성자 ID                                          |
