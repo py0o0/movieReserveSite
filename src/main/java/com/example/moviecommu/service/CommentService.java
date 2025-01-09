@@ -2,66 +2,54 @@ package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.CommentDto;
 import com.example.moviecommu.entity.Comment;
+import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.moviecommu.repository.UserRepository;
+import com.example.moviecommu.util.UserUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final UserUtil userUtil;
+    private final UserRepository userRepository;
 
     // 댓글 생성 기능
-    public CommentDto createComment(CommentDto commentDto) {
-        Comment comment = convertToEntity(commentDto);
-        Comment savedComment = commentRepository.save(comment);
-        return convertToDto(savedComment);
-    }
-
-    // 특정 댓글 조회 기능
-    public CommentDto getComment(Long id) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-        return convertToDto(comment);
+    public void createComment(String content, Long postId, String username) {
+       Comment comment = new Comment();
+       comment.setContent(content);
+       comment.setPostId(postId);
+        User user = userRepository.findById(username);
+        Long userId = user.getUserId();
+        comment.setUserId(userId);
+        commentRepository.save(comment);
     }
 
     // 댓글 수정 기능
-    public CommentDto updateComment(Long id, CommentDto commentDto) {
+    public CommentDto updateComment(Long id, String content) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-        comment.setContent(commentDto.getContent());
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        comment.setContent(content);
         Comment updatedComment = commentRepository.save(comment);
         return convertToDto(updatedComment);
     }
 
     // 댓글 삭제 기능
     public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
-    }
-
-    // 댓글 좋아요 기능
-    public void likeComment(Long id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-        comment.setLikeCount(comment.getLikeCount() + 1);
-        commentRepository.save(comment);
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+        commentRepository.delete(comment);
     }
 
-    // DTO와 엔티티 간 변환 메서드
-    private Comment convertToEntity(CommentDto commentDto) {
-        Comment comment = new Comment();
-        comment.setContent(commentDto.getContent());
-        // Post와 User 설정 로직 추가 필요
-        return comment;
-    }
-
+    // DTO를 엔티티로 변환하는 유틸리티 메서드
     private CommentDto convertToDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(comment.getId());
-        commentDto.setContent(comment.getContent());
-        commentDto.setPostId(comment.getPost().getId());
-        commentDto.setUserId(comment.getUser().getId());
-        commentDto.setLikeCount(comment.getLikeCount());
-        return commentDto;
+        CommentDto dto = new CommentDto();
+        dto.setContent(comment.getContent());
+        dto.setPostId(comment.getPostId());
+        dto.setUserId(comment.getUserId());
+        return dto;
     }
 }

@@ -5,25 +5,18 @@ import lombok.Data;
 
 // 댓글 엔티티 - 데이터베이스의 댓글 테이블과 매핑
 @Entity
-@Table(name = "comments")
+@Table(name = "comment")
 @Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long commentId;
 
-    @Column(nullable = false)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private Long postId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Long userId;
 
-    @Column(name = "like_count")
-    private int likeCount = 0;
 }
 
