@@ -130,5 +130,23 @@
 |                        | `heart`            | `long`             | 게시글 좋아요 수                                    |
 |                        | `fileAttached`     | `int`              | 첨부 파일 개수                                      |
 |                        | `files`            | `List<String>`     | 첨부된 파일 목록                                    |
-| **PostDto**            | `postId`           | `long`             | 게시글 ID                                          |
+| **MovieDto**           | `movieId`          | `long`             | 영화 ID                                            |
+|                        | `title`            | `String`           | 제목                                               |
+|                        | `des`              | `String`           | 영화 설명                                          |
+|                        | `country`          | `String`           | 국가                                               |
+|                        | `director`         | `String`           | 감독                                               |
+|                        | `casting`          | `String`           | 캐스팅                                             |
+|                        | `genre`            | `String`           | 장르                                               |
+|                        | `rating`           | `float`            | 평점                                               |
+|                        | `releaseDate`      | `date`             | 개봉일                                             |
+|                        | `ageLimit`         | `int`              | 관람가                                             |
+|                        | `runningTime`      | `int`              | 상영시간                                           |
+|                        | `onAir`            | `int`              | 상영중 여부                                        |
+|                        | `headCount`        | `int`              | 영화별 총 평점수                                   |
+|                        | `posterUrl`        | `String`           | 포스터 사진 링크                                   |
+| **ReviewDto**          | `movieId`          | `long`             | 영화 ID                                            |
 |                        | `userId`           | `long`             | 작성자 ID                                          |
+|                        | `content`          | `String`           | 한줄평                                             |
+|                        | `rating`           | `float`            | 개인 평점                                          |
+|                        | `up`               | `int`              | 추천 갯수                                          |
+|                        | `down`             | `int`              | 비추천 갯수                                        |
