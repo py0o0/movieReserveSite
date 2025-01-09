@@ -26,6 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserUtil userUtil;
     private final UserRepository userRepository;
+    private final MovieRepository movieRepository;
 
 
     public void writeReview(ReviewDto reviewDto, Long movieId) {
