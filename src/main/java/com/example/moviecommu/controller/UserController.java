@@ -21,8 +21,8 @@ public class UserController {
     private final ReserveService reserveService;
 
     @GetMapping("/do")
-    public String doUser() {
-        return userUtil.getCurrentUserRole();
+    public UserDto doUser() {
+        return userService.getUserInfo();
     }
 
     @PostMapping("/join")
@@ -87,6 +87,16 @@ public class UserController {
     @GetMapping("like/post")
     public ResponseEntity<?> likePost(String username, int size, int page) {
         return userService.likePost(username,size,page);
+    }
+
+    @PostMapping("/ggim")
+    public void Ggim(int movieId){
+        userService.Ggim(movieId);
+    }
+
+    @GetMapping("/ggim/movie")
+    public ResponseEntity<?> ggimMovie(){
+        return userService.ggimMovie();
     }
 
 }

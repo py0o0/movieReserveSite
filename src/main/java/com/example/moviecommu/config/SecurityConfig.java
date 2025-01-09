@@ -43,7 +43,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         http.authorizeHttpRequests(auth->auth
-                .requestMatchers("/","/login","/join","/posts/**","/movie","/movie/**","/search/**").permitAll()
+                .requestMatchers("/","/login","/join","/posts/**","/movie","/movie/**","/search/**","/api/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
