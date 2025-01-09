@@ -113,6 +113,11 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
 
+        long userId = userUtil.getCurrentUsername();
+        if(userId != post.getUserId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         post.setTitle(title);
         post.setContent(content);
         postRepository.save(post);
@@ -122,6 +127,13 @@ public class PostService {
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
+
+        long userId = userUtil.getCurrentUsername();
+        String role = userUtil.getCurrentUserRole();
+        if(userId != post.getUserId() && !role.equals("ROLE_ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         postRepository.delete(post);
     }
 

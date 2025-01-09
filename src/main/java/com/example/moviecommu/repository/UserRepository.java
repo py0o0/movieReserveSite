@@ -1,5 +1,7 @@
 package com.example.moviecommu.repository;
 
+import com.example.moviecommu.dto.PostDto;
+import com.example.moviecommu.dto.PostDtoMyBatis;
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,4 +25,6 @@ public interface UserRepository {
     void update(User nUser);
 
     User findByUserId(long userId);
+
+    List<PostDtoMyBatis> findByLikePost(Map<String, Object> params);
 }

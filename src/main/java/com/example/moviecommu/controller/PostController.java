@@ -32,12 +32,12 @@ public class PostController {
         return postService.getPostById(postId);
     }
 
-    @PutMapping("/{postId}") //수정
+    @PutMapping("update/{postId}") //수정
     public ResponseEntity<?> updatePost(@PathVariable Long postId, String title, String content) {
         return postService.updatePost(postId, title, content);
     }
 
-    @PostMapping("/{postId}") //삭제
+    @PostMapping("delete/{postId}") //삭제
     public void deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
     }
