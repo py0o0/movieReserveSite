@@ -28,4 +28,16 @@
     <update id="update" parameterType="User">
         update user_table set nickname=#{nickname}, birth=#{birth}, phone=#{phone} where id=#{id}
     </update>
+
+    <select id="findByUserId" parameterType="Long" resultType="User">
+        select * from user_table where userId=#{userId}
+    </select>
+
+    <select id="findByLikePost" resultType="PostDtoMyBatis">
+        select p.*
+        from post p
+                 join postLike l on p.post_id = l.postId
+        where l.userId = #{userId}
+            LIMIT #{page},#{size}
+    </select>
 </mapper>

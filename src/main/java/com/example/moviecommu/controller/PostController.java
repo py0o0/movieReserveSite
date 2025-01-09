@@ -9,89 +9,74 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    // 게시글 작성
-    @PostMapping("/write")
-    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto) {
-        postService.write(postDto);
+    @PostMapping("/write") //게시글 작성 이미지 파일들 첨부 가능
+    public ResponseEntity<Void> createPost(String title, String content, List<MultipartFile> files) throws IOException {
+        postService.write(title, content, files);
         return ResponseEntity.ok().build();
     }
 
-    // 게시글 목록 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<PostDto>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAll());
+    @GetMapping("/{postId}") //게시글 상세 조회, 나중에 댓글도 같이 전송
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+        return postService.getPostById(postId);
     }
 
-    // 게시글 상세 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPost(@PathVariable Long id) {
-        try {
-            PostDto postDto = postService.getPostById(id);
-            return ResponseEntity.ok(postDto);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("update/{postId}") //수정
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, String title, String content) {
+        return postService.updatePost(postId, title, content);
     }
 
-    // 게시글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        return ResponseEntity.ok(postService.updatePost(id, post));
+    @PostMapping("delete/{postId}") //삭제
+    public void deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
     }
 
-    // 게시글 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/like")///좋아요
+    public void likePost(long postId, String username){
+        postService.likePost(postId, username);
+
     }
 
-    // 페이징 처리
-    @GetMapping("/list/page")
-    public ResponseEntity<Page<PostDto>> getPostsByPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardId"));
-        return ResponseEntity.ok(postService.getPostsByPage(pageRequest));
+    @GetMapping("/list/page") //게시글 전체조회
+    public ResponseEntity<?> getPostsByPage(int page, int size) {
+        PageRequest pageRequest =  PageRequest.of(page, size);
+        return postService.getPostsByPage(pageRequest);
     }
 
-    // 제목으로 검색
-    @GetMapping("/search/title")
-    public ResponseEntity<Page<PostDto>> searchByTitle(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/search/title")// 제목으로 검색
+    public ResponseEntity<?> searchByTitle(String keyword, int page, int size) {
+        System.out.println(keyword);
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchByTitle(keyword, pageRequest));
+        return postService.searchByTitle(keyword, pageRequest);
     }
 
-    // 내용으로 검색
-    @GetMapping("/search/content")
-    public ResponseEntity<Page<PostDto>> searchByContent(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+
+    @GetMapping("/search/content")// 내용으로 검색
+    public ResponseEntity<?> searchByContent(String keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchByContent(keyword, pageRequest));
+        return postService.searchByContent(keyword, pageRequest);
     }
 
-    // 제목 또는 내용으로 검색
-    @GetMapping("/search")
-    public ResponseEntity<Page<PostDto>> searchPosts(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/search/username")  // username으로 게시글 불러오기 검색도 가능
+    public ResponseEntity<?> searchByUsername(String username, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return ResponseEntity.ok(postService.searchPosts(keyword, pageRequest));
+        return postService.searchByUsername(username, pageRequest);
+    }
+
+    @GetMapping("/search")  // 제목 또는 내용으로 검색
+    public ResponseEntity<?> searchPosts(String keyword, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return postService.searchPosts(keyword, pageRequest);
     }
 }
