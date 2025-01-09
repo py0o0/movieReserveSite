@@ -158,3 +158,7 @@
 |                        | `rating`           | `float`            | 개인 평점                                          |
 |                        | `up`               | `int`              | 추천 갯수                                          |
 |                        | `down`             | `int`              | 비추천 갯수                                        |
+| **CommentDto** | `commentId`  | `Long` | 댓글 ID     |
+|            | `content`    | `String` | 댓글 내용 |
+|            | `postId`     | `Long` | 게시글 ID   |
+|            | `userId`     | `Long` | 작성자 ID   |
