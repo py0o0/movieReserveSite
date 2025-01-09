@@ -1,4 +1,4 @@
-# API 명세-
+# API 명세
 
 ## UserController API
 
@@ -85,6 +85,17 @@
 
 ---
 
+
+## CommentController API
+
+| 엔드포인트 | 메소드 | 설명 | 요청 파라미터 | 응답 |
+|------------|--------|------|----------------|------|
+| `/api/comments/newcomment` | POST | 댓글 생성 | Query: `content`<br>Query: `postId`<br>Query: `username` | 200 OK |
+| `/api/comments/{commentId}` | PUT | 댓글 수정 | Path: `commentId`<br>Query: `content` | 200 OK |
+| `/api/comments/{id}` | DELETE | 댓글 삭제 | Path: `id` | 204 No Content |
+
+## DTO 클래스 정의
+
 | **Class Name**         | **Field Name**     | **Type**           | **Description**                                     |
 |------------------------|--------------------|--------------------|----------------------------------------------------|
 | **MyReserveDto**       | `seatId`          | `String`           | 좌석 ID                                            |
@@ -168,3 +179,4 @@
 |                        | `content`         | `String`           | 댓글 내용                                          |
 |                        | `postId`          | `Long`             | 게시글 ID                                          |
 |                        | `userId`          | `Long`             | 작성자 ID                                          |
+

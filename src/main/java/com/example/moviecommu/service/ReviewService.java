@@ -3,7 +3,9 @@ package com.example.moviecommu.service;
 import com.example.moviecommu.dto.ReviewDto;
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.Review;
+import com.example.moviecommu.repository.MovieRepository;
 import com.example.moviecommu.entity.User;
+
 import com.example.moviecommu.repository.ReviewRepository;
 import com.example.moviecommu.repository.UserRepository;
 import com.example.moviecommu.util.UserUtil;
@@ -25,6 +27,7 @@ public class ReviewService {
     private final UserUtil userUtil;
     private final UserRepository userRepository;
 
+
     public void writeReview(ReviewDto reviewDto, Long movieId) {
         Long currentUserId = userUtil.getCurrentUsername();
         if (!Objects.equals(reviewDto.getUserId(), currentUserId)) {
@@ -39,6 +42,7 @@ public class ReviewService {
                 .down(reviewDto.getDown())
                 .build();
         reviewRepository.save(review);
+        movieRepository.ratingAdd(movieId, reviewDto.getRating());
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {
