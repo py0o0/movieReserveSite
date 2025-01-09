@@ -9,12 +9,14 @@ import com.example.moviecommu.service.ReviewService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MovieController {
@@ -31,12 +33,14 @@ public class MovieController {
         return movieService.getTopTwenties();
     }
 
-    @GetMapping(value = "/movie/{movieId}", produces = "application/json; charset=UTF-8")
-    public String showMovieDetail(@PathVariable("movieId") Long movieId) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("movie", new JSONObject(movieService.findByMovieId(movieId)));
-        json.put("reviews", new JSONArray(reviewService.findByMovieId(movieId)));
+    @GetMapping(value = "/movie/{movieId}", produces = "application/json; charset=UTF-8") //유저네임도 같이 반환
+    public ResponseEntity<?> showMovieDetail(@PathVariable("movieId") Long movieId){
+        MovieDto movieDto = movieService.findByMovieId(movieId);
+        ResponseEntity<?> reviewData = reviewService.findByMovieId(movieId);
 
-        return json.toString();
+        return ResponseEntity.ok(Map.of(
+                "movie", movieDto,
+                "reviwe", reviewData
+        ));
     }
 }
