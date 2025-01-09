@@ -4,6 +4,7 @@ import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -77,11 +78,14 @@ public class SecurityConfig {
                     ObjectMapper objectMapper = new ObjectMapper();
                     String userDtoJson = objectMapper.writeValueAsString(userDto);
 
+                    ObjectNode jsonResponse = objectMapper.readValue(userDtoJson, ObjectNode.class);
+                    jsonResponse.put("userId", userId);
+
                     // JSON 반환 설정
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().write(userDtoJson);
+                    response.getWriter().write(jsonResponse.toString());
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 실패 시 401 Unauthorized
