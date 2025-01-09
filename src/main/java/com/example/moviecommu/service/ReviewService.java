@@ -2,6 +2,7 @@ package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.ReviewDto;
 import com.example.moviecommu.entity.Review;
+import com.example.moviecommu.repository.MovieRepository;
 import com.example.moviecommu.repository.ReviewRepository;
 import com.example.moviecommu.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
+    private MovieRepository movieRepository;
     private UserUtil userUtil;
 
     public void writeReview(ReviewDto reviewDto, Long movieId) {
@@ -31,6 +33,7 @@ public class ReviewService {
                 .down(reviewDto.getDown())
                 .build();
         reviewRepository.save(review);
+        movieRepository.ratingAdd(movieId, reviewDto.getRating());
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {

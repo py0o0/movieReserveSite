@@ -19,4 +19,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("SELECT m FROM Movie m ORDER BY m.rating DESC LIMIT 20")
     List<Movie> findTopTwentyOrderByRatingDesc();
+
+    @Query("UPDATE Movie m SET m.headCount = m.headCount + 1, m.rating = ((m.rating * 10000) + :score) / (m.headCount + 1) WHERE m.movieId = :movieId")
+    void ratingAdd(@Param("movieId")Long movieId, @Param("score")float score);
 }
