@@ -1,14 +1,13 @@
 package com.example.moviecommu.service;
 
+import com.example.moviecommu.dto.CommentDto;
 import com.example.moviecommu.dto.PostDto;
 import com.example.moviecommu.dto.UserDto;
+import com.example.moviecommu.entity.Comment;
 import com.example.moviecommu.entity.Post;
 import com.example.moviecommu.entity.PostFile;
 import com.example.moviecommu.entity.User;
-import com.example.moviecommu.repository.PostFileRepository;
-import com.example.moviecommu.repository.PostLikeRepository;
-import com.example.moviecommu.repository.PostRepository;
-import com.example.moviecommu.repository.UserRepository;
+import com.example.moviecommu.repository.*;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ public class PostService {
     private final UserUtil userUtil;
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     public void write (String title, String content, List<MultipartFile> files) throws IOException {
         long userId = userUtil.getCurrentUsername();
@@ -99,15 +99,36 @@ public class PostService {
             post.setCnt(post.getCnt() + 1);
             postRepository.save(post);
 
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
+            List<CommentDto> commentDtoList = new ArrayList<>();
+            List<UserDto> userDtoList = new ArrayList<>();
+            for(Comment comment : commentList) {
+                CommentDto commentDto = new CommentDto();
+                commentDto.setCommentId(comment.getCommentId());
+                commentDto.setUserId(comment.getUserId());
+                commentDto.setContent(comment.getContent());
+                commentDtoList.add(commentDto);
+
+                User cUser = userRepository.findByUserId(comment.getUserId());
+                UserDto userDto2 = new UserDto();
+                userDto2.setNickname(cUser.getNickname());
+                userDto2.setId(cUser.getId());
+                userDtoList.add(userDto2);
+            }
+
             return ResponseEntity.ok(Map.of(
                     "post", postDto,
-                    "user", userDto
+                    "postUser", userDto,
+                    "comment", commentDtoList,
+                    "commentUser", userDtoList
             ));
 
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
 
     public ResponseEntity<?> updatePost(Long id,String title, String content) {
         Post post = postRepository.findById(id)
