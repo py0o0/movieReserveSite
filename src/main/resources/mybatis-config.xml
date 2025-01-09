@@ -11,5 +11,7 @@
         <typeAlias type="com.example.moviecommu.dto.MyReserveDto" alias="MyReserve"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.Movie" alias="Movie"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.Review" alias="Review"></typeAlias>
+        <typeAlias type="com.example.moviecommu.entity.PostFile" alias="PostFile"></typeAlias>
+        <typeAlias type="com.example.moviecommu.dto.PostDtoMyBatis" alias="PostDtoMyBatis"></typeAlias>
     </typeAliases>
 </configuration>

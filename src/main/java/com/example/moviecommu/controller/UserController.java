@@ -20,14 +20,6 @@ public class UserController {
     private final UserService userService;
     private final ReserveService reserveService;
 
-    @PostMapping("/test")
-    public void test( MultipartFile file) throws IOException {
-        String storedFileName=System.currentTimeMillis() + file.getOriginalFilename();
-        String savePath = "C:/Users/CSP/mini1/src/main/resources/img/" + storedFileName;
-        //"C:/file_upload_test/"
-        file.transferTo(new File(savePath));
-    }
-
     @GetMapping("/do")
     public String doUser() {
         return userUtil.getCurrentUserRole();
@@ -60,7 +52,7 @@ public class UserController {
             return ResponseEntity.ok("followed");
         return ResponseEntity.badRequest().body("follow failed");
     }
-    @PostMapping("/flwDelete") //팔로워의 유저네임(ID) 인풋으로 받아 삭제
+    @PostMapping("/follower/delete") //팔로워의 유저네임(ID) 인풋으로 받아 삭제
     public ResponseEntity<String> flwerDelete(String username) {
         if(userService.flwerDelete(username))
             return ResponseEntity.ok("deleted");
@@ -87,9 +79,14 @@ public class UserController {
         return reserveService.getMyReserve();
     }
 
-    @GetMapping("/myReservePrevious") // 나의 예매 내역 보기 (상영 날짜 지난 정보만 보여줌)
-    public List<MyReserveDto> getMyReservePrevios(){
+    @GetMapping("/myReserve/previous") // 나의 예매 내역 보기 (상영 날짜 지난 정보만 보여줌)
+    public List<MyReserveDto> getMyReservePrevious(){
         return reserveService.getMyReservePrevios();
+    }
+
+    @GetMapping("like/post")
+    public ResponseEntity<?> likePost(String username, int size, int page) {
+        return userService.likePost(username,size,page);
     }
 
 }

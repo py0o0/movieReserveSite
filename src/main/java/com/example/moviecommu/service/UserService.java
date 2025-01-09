@@ -1,14 +1,13 @@
 package com.example.moviecommu.service;
 
-import com.example.moviecommu.dto.UserDto;
-import com.example.moviecommu.dto.UserPageDto;
-import com.example.moviecommu.dto.UserPagingDto;
+import com.example.moviecommu.dto.*;
 import com.example.moviecommu.entity.Following;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.FollowingRepository;
 import com.example.moviecommu.repository.UserRepository;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -202,6 +201,33 @@ public class UserService {
 
         userRepository.update(nUser);
         return true;
+    }
+
+    public ResponseEntity<?> likePost(String username,int size, int page) {
+        User nUser = userRepository.findById(username);
+        Long userId = nUser.getUserId();
+        System.out.println(nUser);
+        Map<String, Object> params = new HashMap<>();
+        page = size * page;
+        params.put("size", size);
+        params.put("page", page);
+        params.put("userId", userId);
+
+        List<PostDtoMyBatis> postDtoList = userRepository.findByLikePost(params);
+        System.out.println(postDtoList);
+        List<UserDto> userList = new ArrayList<>();
+        for(PostDtoMyBatis postDto : postDtoList){
+            User user = userRepository.findByUserId(postDto.getUser_id());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postDtoList,
+                "user", userList
+        ));
     }
 
 //    public void insertMovie(MovieDto moviedto) {
