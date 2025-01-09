@@ -19,29 +19,7 @@ public class SearchController {
     }
 
     @GetMapping("/search/{word}")
-    public List<Movie> search(@PathVariable("word") String word) {
-        List<MovieDto> movieDtoList = movieService.findByWord(word);
-        List<Movie> movieList = new ArrayList<>();
-
-        movieDtoList.forEach(movieDto -> {
-            Movie movie = new Movie();
-            movie.setMovieId(movieDto.getMovieId());
-            movie.setTitle(movieDto.getTitle());
-            movie.setDes(movieDto.getDes());
-            movie.setCountry(movieDto.getCountry());
-            movie.setDirector(movieDto.getDirector());
-            movie.setCasting(movieDto.getCasting());
-            movie.setGenre(movieDto.getGenre());
-            movie.setRating(movieDto.getRating());
-            movie.setReleaseDate(movieDto.getReleaseDate());
-            movie.setAgeLimit(movieDto.getAgeLimit());
-            movie.setRunningTime(movieDto.getRunningTime());
-            movie.setOnAir(movieDto.getOnAir());
-            movie.setHeadCount(movieDto.getHeadCount());
-            movie.setPosterUrl(movieDto.getPosterUrl());
-            movieList.add(movie);
-        });
-
-        return movieList;
+    public List<MovieDto> search(@PathVariable("word") String word) {
+        return movieService.findByWord(word);
     }
 }
