@@ -28,8 +28,4 @@ public class AdminController {
         return ResponseEntity.badRequest().body("join failed");
     }
 
-//    @PostMapping("insert/movie")
-//    public void insertMovie(MovieDto moviedto) {
-//        userService.insertMovie(moviedto);
-//    }
 }

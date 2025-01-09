@@ -2,20 +2,22 @@
 
 ## UserController API
 
-| **Endpoint**          | **Method** | **Description**    | **Request Parameters**                          | **Response**                                                                                       |
-|-----------------------|------------|--------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `/do`                 | `GET`      | 현재 사용자 역할 반환       | 없음                                              | `200 OK`: 사용자 역할 반환 (예: `"ROLE_USER"`, `"ROLE_ADMIN"`)                                     |
-| `/join`               | `POST`     | 새로운 사용자 가입 처리      | `UserDto`                                       | `200 OK`: `"joined"` 반환 <br> `401 Unauthorized`: `"join failed"` 반환                           |
-| `/user/update`        | `POST`     | 사용자 정보 업데이트        | `UserDto`                                       | `200 OK`: `"updated"` 반환 <br> `400 Bad Request`: `"update failed"` 반환                          |
-| `/user/delete`        | `POST`     | 사용자를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환                          |
-| `/follow`             | `POST`     | 사용자를 팔로우하거나 팔로우 취소 | `username` (String)                             | `200 OK`: `"followed"` 반환 <br> `400 Bad Request`: `"follow failed"` 반환                         |
-| `/follower/delete`    | `POST`     | 팔로워를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환                          |
-| `/followingList`      | `GET`      | 팔로잉 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                                   |
-| `/followerList`       | `GET`      | 팔로워 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                                   |
-| `/userPage`           | `GET`      | 사용자 페이지 정보 반환      | `username` (String)                             | `200 OK`: `{ "following": 팔로잉 수, "followers": 팔로워 수 }` 반환                                 |
-| `/myReserve`          | `GET`      | 현재 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                                               |
-| `/myReserve/previous` | `GET`      | 지난 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                                               |
-| `/like/post`          | `GET`      | 좋아한 게시글목록 출력       | `username` (String), `page` (int), `size` (int) | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
+| **Endpoint**          | **Method** | **Description**    | **Request Parameters**                          | **Response**                                                           |
+|-----------------------|------------|--------------------|-------------------------------------------------|------------------------------------------------------------------------|
+| `/do`                 | `GET`      | 현재 사용자 정보 반환       | `없음                                             | `200 OK`: 'UserDto' 반환                                                 |
+| `/join`               | `POST`     | 새로운 사용자 가입 처리      | `UserDto`                                       | `200 OK`: `"joined"` 반환 <br> `401 Unauthorized`: `"join failed"` 반환    |
+| `/user/update`        | `POST`     | 사용자 정보 업데이트        | `UserDto`                                       | `200 OK`: `"updated"` 반환 <br> `400 Bad Request`: `"update failed"` 반환  |
+| `/user/delete`        | `POST`     | 사용자를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환  |
+| `/follow`             | `POST`     | 사용자를 팔로우하거나 팔로우 취소 | `username` (String)                             | `200 OK`: `"followed"` 반환 <br> `400 Bad Request`: `"follow failed"` 반환 |
+| `/follower/delete`    | `POST`     | 팔로워를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환  |
+| `/followingList`      | `GET`      | 팔로잉 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                 |
+| `/followerList`       | `GET`      | 팔로워 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                 |
+| `/userPage`           | `GET`      | 사용자 페이지 정보 반환      | `username` (String)                             | `200 OK`: `{ "following": 팔로잉 수, "followers": 팔로워 수 }` 반환              |
+| `/myReserve`          | `GET`      | 현재 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
+| `/myReserve/previous` | `GET`      | 지난 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
+| `/like/post`          | `GET`      | 좋아한 게시글목록 출력       | `username` (String), `page` (int), `size` (int) | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                  |
+| `/ggim`               | `POST`     | 영화 찜               | `movieId` (int)                                 | `200 OK`                                                               |
+| `/ggim/movie`         | `GET`      | 찜한 영화 불러오기         | 없음                                              | `200 OK`: 찜한 영화 목록 반환 (`GGimMovieDto`)                                 |
 
 ---
 
@@ -83,6 +85,7 @@
 
 ---
 
+
 ## CommentController API
 
 | 엔드포인트 | 메소드 | 설명 | 요청 파라미터 | 응답 |
@@ -129,36 +132,51 @@
 |                        | `followers`       | `long`             | 팔로워 수                                          |
 | **UserPagingDto**      | `userCnt`         | `Long`             | 전체 사용자 수                                     |
 |                        | `users`           | `List<UserDto>`    | 사용자 목록                                        |
-| **PostDto**            | `postId`           | `long`             | 게시글 ID                                          |
-|                        | `userId`           | `long`             | 작성자 ID                                          |
-|                        | `title`            | `String`           | 게시글 제목                                        |
-|                        | `content`          | `String`           | 게시글 내용                                        |
-|                        | `created`          | `String`           | 게시글 작성일                                      |
-|                        | `cnt`              | `long`             | 게시글 조회수                                      |
-|                        | `heart`            | `long`             | 게시글 좋아요 수                                    |
-|                        | `fileAttached`     | `int`              | 첨부 파일 개수                                      |
-|                        | `files`            | `List<String>`     | 첨부된 파일 목록                                    |
-| **MovieDto**           | `movieId`          | `long`             | 영화 ID                                            |
-|                        | `title`            | `String`           | 제목                                               |
-|                        | `des`              | `String`           | 영화 설명                                          |
-|                        | `country`          | `String`           | 국가                                               |
-|                        | `director`         | `String`           | 감독                                               |
-|                        | `casting`          | `String`           | 캐스팅                                             |
-|                        | `genre`            | `String`           | 장르                                               |
-|                        | `rating`           | `float`            | 평점                                               |
-|                        | `releaseDate`      | `date`             | 개봉일                                             |
-|                        | `ageLimit`         | `int`              | 관람가                                             |
-|                        | `runningTime`      | `int`              | 상영시간                                           |
-|                        | `onAir`            | `int`              | 상영중 여부                                        |
-|                        | `headCount`        | `int`              | 영화별 총 평점수                                   |
-|                        | `posterUrl`        | `String`           | 포스터 사진 링크                                   |
-| **ReviewDto**          | `movieId`          | `long`             | 영화 ID                                            |
-|                        | `userId`           | `long`             | 작성자 ID                                          |
-|                        | `content`          | `String`           | 한줄평                                             |
-|                        | `rating`           | `float`            | 개인 평점                                          |
-|                        | `up`               | `int`              | 추천 갯수                                          |
-|                        | `down`             | `int`              | 비추천 갯수                                        |
-| **CommentDto** | `commentId`  | `Long` | 댓글 ID     |
-|            | `content`    | `String` | 댓글 내용 |
-|            | `postId`     | `Long` | 게시글 ID   |
-|            | `userId`     | `Long` | 작성자 ID   |
+| **PostDto**            | `postId`          | `long`             | 게시글 ID                                          |
+|                        | `userId`          | `long`             | 작성자 ID                                          |
+|                        | `title`           | `String`           | 게시글 제목                                        |
+|                        | `content`         | `String`           | 게시글 내용                                        |
+|                        | `created`         | `String`           | 게시글 작성일                                      |
+|                        | `cnt`             | `long`             | 게시글 조회수                                      |
+|                        | `heart`           | `long`             | 게시글 좋아요 수                                   |
+|                        | `fileAttached`    | `int`              | 첨부 파일 개수                                     |
+|                        | `files`           | `List<String>`     | 첨부된 파일 목록                                   |
+| **MovieDto**           | `movieId`         | `long`             | 영화 ID                                            |
+|                        | `title`           | `String`           | 제목                                               |
+|                        | `des`             | `String`           | 영화 설명                                          |
+|                        | `country`         | `String`           | 국가                                               |
+|                        | `director`        | `String`           | 감독                                               |
+|                        | `casting`         | `String`           | 캐스팅                                             |
+|                        | `genre`           | `String`           | 장르                                               |
+|                        | `rating`          | `float`            | 평점                                               |
+|                        | `releaseDate`     | `date`             | 개봉일                                             |
+|                        | `ageLimit`        | `int`              | 관람가                                             |
+|                        | `runningTime`     | `int`              | 상영시간                                           |
+|                        | `onAir`           | `int`              | 상영중 여부                                        |
+|                        | `headCount`       | `int`              | 영화별 총 평점수                                   |
+|                        | `posterUrl`       | `String`           | 포스터 사진 링크                                   |
+| **ReviewDto**          | `movieId`         | `long`             | 영화 ID                                            |
+|                        | `userId`          | `long`             | 작성자 ID                                          |
+|                        | `content`         | `String`           | 한줄평                                             |
+|                        | `rating`          | `float`            | 개인 평점                                          |
+|                        | `up`              | `int`              | 추천 갯수                                          |
+|                        | `down`            | `int`              | 비추천 갯수                                        |
+| **GgimMovieDto**       | `movieId`         | `Long`             | 영화 고유 ID                                       |
+|                        | `title`           | `String`           | 제목                                               |
+|                        | `des`             | `String`           | 영화 설명, 줄거리                                  |
+|                        | `country`         | `String`           | 국가                                               |
+|                        | `director`        | `String`           | 감독                                               |
+|                        | `casting`         | `String`           | 캐스팅 (배우 목록)                                 |
+|                        | `genre`           | `String`           | 장르                                               |
+|                        | `rating`          | `float`            | 평점                                               |
+|                        | `releaseDate`     | `Date`             | 개봉일                                             |
+|                        | `ageLimit`        | `int`              | 연령 제한                                          |
+|                        | `runningTime`     | `int`              | 상영 시간                                          |
+|                        | `onAir`           | `int`              | 상영 중 여부                                       |
+|                        | `headCount`       | `int`              | 평점 수                                            |
+|                        | `posterUrl`       | `String`           | 포스터 URL                                         |
+| **CommentDto**         | `commentId`       | `Long`             | 댓글 ID                                            |
+|                        | `content`         | `String`           | 댓글 내용                                          |
+|                        | `postId`          | `Long`             | 게시글 ID                                          |
+|                        | `userId`          | `Long`             | 작성자 ID                                          |
+
