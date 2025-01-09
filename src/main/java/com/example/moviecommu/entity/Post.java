@@ -42,8 +42,4 @@ public class Post {
         // 현재 날짜를 "yyyy-MM-dd" 형식으로 설정
         this.created = LocalDate.now().toString();
     }
-
-    public Long getId() {
-        return 0L;
-    }
 }
