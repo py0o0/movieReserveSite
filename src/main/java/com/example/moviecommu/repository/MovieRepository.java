@@ -14,6 +14,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Movie findByTitle(String title);
 
+    @Query("SELECT m FROM Movie m")
+    List<Movie> getAllMovies();
+
     @Query("SELECT m FROM Movie m WHERE m.title LIKE CONCAT('%',:word,'%') OR m.director LIKE CONCAT('%',:word,'%') OR m.casting LIKE CONCAT('%',:word,'%')")
     List<Movie> findByWord(@Param("word")String word);
 

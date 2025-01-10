@@ -62,4 +62,14 @@ public class MovieService {
 
         return movieDtoList;
     }
+
+    public List<MovieDto> getAllMovies() {
+        List<Movie> movieList = movieRepository.getAllMovies();
+        List<MovieDto> movieDtoList = new ArrayList<>();
+        movieList.forEach(movie -> {
+            movieDtoList.add(getMovie(movie));
+        });
+
+        return movieDtoList;
+    }
 }

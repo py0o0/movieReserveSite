@@ -26,7 +26,12 @@ public class MovieController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/movie")
+    @GetMapping("/movie/all")
+    public List<MovieDto> getAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GetMapping("/movie/rank")
     public List<MovieDto> showMovieRank() {
         return movieService.getTopTwenties();
     }
