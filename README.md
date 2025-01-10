@@ -16,7 +16,8 @@
 | `/myReserve`          | `GET`      | 현재 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
 | `/myReserve/previous` | `GET`      | 지난 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
 | `/like/post`          | `GET`      | 좋아한 게시글목록 출력       | `username` (String), `page` (int), `size` (int) | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                  |
-| `/ggim`               | `POST`     | 영화 찜               | `movieId` (int)                                 | `200 OK`                                                               |
+| `/ggim`               | `POST`     | 영화 찜               | `movieId` (int)                                 | `200 OK`: `"ggim"` 반환 <br> `400 Bad Request`: `"Already ggim"` 반환      |
+| `/ggim/delete`        | `POST`     | 영화 찜 취소            | `movieId` (int)                                 | `200 OK`: `"ggim deleted"` 반환 <br> `400 Bad Request`: `"Not ggim"` 반환  |
 | `/ggim/movie`         | `GET`      | 찜한 영화 불러오기         | 없음                                              | `200 OK`: 찜한 영화 목록 반환 (`GGimMovieDto`)                                 |
 
 ---
