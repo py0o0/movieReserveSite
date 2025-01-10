@@ -13,5 +13,6 @@
         <typeAlias type="com.example.moviecommu.entity.Review" alias="Review"></typeAlias>
         <typeAlias type="com.example.moviecommu.entity.PostFile" alias="PostFile"></typeAlias>
         <typeAlias type="com.example.moviecommu.dto.PostDtoMyBatis" alias="PostDtoMyBatis"></typeAlias>
+        <typeAlias type="com.example.moviecommu.dto.GgimMovieDto" alias="GgimMovieDto"></typeAlias>
     </typeAliases>
 </configuration>

@@ -1,5 +1,6 @@
 package com.example.moviecommu.repository;
 
+import com.example.moviecommu.dto.GgimMovieDto;
 import com.example.moviecommu.dto.PostDto;
 import com.example.moviecommu.dto.PostDtoMyBatis;
 import com.example.moviecommu.dto.UserDto;
@@ -27,4 +28,12 @@ public interface UserRepository {
     User findByUserId(long userId);
 
     List<PostDtoMyBatis> findByLikePost(Map<String, Object> params);
+
+    int findByGgim(Map<String, Object> params);
+
+    void Ggim(Map<String, Object> params);
+
+    void deleteGgim(Map<String, Object> params);
+
+    List<GgimMovieDto> getGgimMovie(long userId);
 }

@@ -64,7 +64,7 @@ public class MovieService {
     }
 
     public List<MovieDto> getAllMovies() {
-        List<Movie> movieList = movieRepository.getAllMovies();
+        List<Movie> movieList = movieRepository.findAll();
         List<MovieDto> movieDtoList = new ArrayList<>();
         movieList.forEach(movie -> {
             movieDtoList.add(getMovie(movie));

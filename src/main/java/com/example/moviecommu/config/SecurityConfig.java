@@ -1,10 +1,16 @@
 package com.example.moviecommu.config;
 
+import com.example.moviecommu.dto.UserDto;
+import com.example.moviecommu.entity.User;
+import com.example.moviecommu.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder bcryptPasswordEncoder() {
@@ -43,7 +50,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         http.authorizeHttpRequests(auth->auth
-                .requestMatchers("/","/login","/join","/posts/**","/movie","/movie/**","/search/**").permitAll()
+                .requestMatchers("/","/login","/join","/posts/**","/movie","/movie/**","/search/**","/api/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
@@ -56,8 +63,29 @@ public class SecurityConfig {
         http.formLogin(auth->auth
                 .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
-                    response.setStatus(HttpServletResponse.SC_OK); // 성공 시 200 OK
-                    response.getWriter().write("Login Success");  // 추가적인 성공 메시지 등 응답 처리
+                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+                    long userId = Long.parseLong(userDetails.getUsername());
+                    User user = userRepository.findByUserId(userId);
+                    UserDto userDto = new UserDto();
+                    userDto.setNickname(user.getNickname());
+                    userDto.setId(user.getId());
+                    userDto.setRole(user.getRole());
+                    userDto.setPhone(user.getPhone());
+                    userDto.setBirth(user.getBirth());
+
+                    // UserDto를 JSON으로 변환
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String userDtoJson = objectMapper.writeValueAsString(userDto);
+
+                    ObjectNode jsonResponse = objectMapper.readValue(userDtoJson, ObjectNode.class);
+                    jsonResponse.put("userId", userId);
+
+                    // JSON 반환 설정
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write(jsonResponse.toString());
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 실패 시 401 Unauthorized
