@@ -33,7 +33,7 @@ public class ReviewService {
                 .down(reviewDto.getDown())
                 .build();
         reviewRepository.save(review);
-        movieRepository.ratingAdd(movieId, reviewDto.getRating());
+        movieRepository.addRating(movieId, reviewDto.getRating());
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {
