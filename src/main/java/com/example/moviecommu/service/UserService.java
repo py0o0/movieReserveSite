@@ -126,6 +126,7 @@ public class UserService {
         for (User user : flwList) {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
             userDtoList.add(userDto);
         }
 
@@ -152,6 +153,7 @@ public class UserService {
         for (User user : flwList) {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
             userDtoList.add(userDto);
         }
         UserPagingDto userPagingDto = new UserPagingDto();
