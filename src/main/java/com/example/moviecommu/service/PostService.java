@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -182,7 +184,13 @@ public class PostService {
     }
 
     public ResponseEntity<?> getPostsByPage(PageRequest pageable) {
-        Page<Post> postPage = postRepository.findAll(pageable);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+
+        Page<Post> postPage = postRepository.findAll(pageableByIdDesc);
         List<UserDto> userList = new ArrayList<>();
         for(Post post : postPage.getContent()) {
             User user = userRepository.findByUserId(post.getUserId());
@@ -203,7 +211,13 @@ public class PostService {
         if (keyword == null || keyword.trim().isEmpty()) {
             throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
-        Page<Post> postPage = postRepository.findByTitleContaining(keyword, pageable);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+
+        Page<Post> postPage = postRepository.findByTitleContaining(keyword, pageableByIdDesc);
         List<UserDto> userList = new ArrayList<>();
         for(Post post : postPage.getContent()) {
             User user = userRepository.findByUserId(post.getUserId());
@@ -224,7 +238,12 @@ public class PostService {
         if (keyword == null || keyword.trim().isEmpty()) {
             throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
-        Page<Post> postPage = postRepository.findByContentContaining(keyword, pageable);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+        Page<Post> postPage = postRepository.findByContentContaining(keyword, pageableByIdDesc);
         List<UserDto> userList = new ArrayList<>();
         for(Post post : postPage.getContent()) {
             User user = userRepository.findByUserId(post.getUserId());
@@ -245,7 +264,12 @@ public class PostService {
         if (keyword == null || keyword.trim().isEmpty()) {
             throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
         }
-        Page<Post> postPage = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+        Page<Post> postPage = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageableByIdDesc);
         List<UserDto> userList = new ArrayList<>();
         for(Post post : postPage.getContent()) {
             User user = userRepository.findByUserId(post.getUserId());
@@ -267,7 +291,12 @@ public class PostService {
             throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 유저");
         }
         long userId = nUser.getUserId();
-        Page<Post> postPage = postRepository.findByUserId(userId, pageable);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+        Page<Post> postPage = postRepository.findByUserId(userId, pageableByIdDesc);
         List<UserDto> userList = new ArrayList<>();
         for(Post post : postPage.getContent()) {
             User user = userRepository.findByUserId(post.getUserId());
