@@ -40,7 +40,7 @@ public class MovieController {
 
         return ResponseEntity.ok(Map.of(
                 "movie", movieDto,
-                "reviwe", reviewData
+                "review", reviewData
         ));
     }
 }

@@ -230,14 +230,28 @@ public class UserService {
         ));
     }
 
-    public void Ggim(int movieId) {
+    public ResponseEntity<String> Ggim(int movieId) {
         long userId = userUtil.getCurrentUsername();
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("movieId", movieId);
-        if(userRepository.findByGgim(params) == 0)
+        if(userRepository.findByGgim(params) == 0) {
             userRepository.Ggim(params);
-        else userRepository.deleteGgim(params);
+            return ResponseEntity.ok("Ggim");
+        }
+        return ResponseEntity.badRequest().body("Already Ggim");
+    }
+
+    public ResponseEntity<String> ggimdelete(int movieId) {
+        long userId = userUtil.getCurrentUsername();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("movieId", movieId);
+        if(userRepository.findByGgim(params) == 1) {
+            userRepository.deleteGgim(params);
+            return ResponseEntity.ok("Ggim delete");
+        }
+        return ResponseEntity.badRequest().body("Not Ggim");
     }
 
     public ResponseEntity<?> ggimMovie() {
@@ -262,4 +276,5 @@ public class UserService {
         userDto.setRole(user.getRole());
         return userDto;
     }
+
 }
