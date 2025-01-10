@@ -90,13 +90,19 @@ public class UserController {
     }
 
     @PostMapping("/ggim")
-    public void Ggim(int movieId){
-        userService.Ggim(movieId);
+    public ResponseEntity<String> Ggim(int movieId){
+        return userService.Ggim(movieId);
+    }
+
+    @PostMapping("/ggim/delete")
+    public ResponseEntity<String> ggimdelete(int movieId){
+        return userService.ggimdelete(movieId);
     }
 
     @GetMapping("/ggim/movie")
     public ResponseEntity<?> ggimMovie(){
         return userService.ggimMovie();
     }
+
 
 }
