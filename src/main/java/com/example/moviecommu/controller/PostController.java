@@ -74,6 +74,12 @@ public class PostController {
         return postService.searchByUsername(username, pageRequest);
     }
 
+    @GetMapping("/search/nickname")  // 닉네임으로 게시글 불러오기 검색도 가능
+    public ResponseEntity<?> searchByNickname(String nickname, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return postService.searchByNickname(nickname, pageRequest);
+    }
+
     @GetMapping("/search")  // 제목 또는 내용으로 검색
     public ResponseEntity<?> searchPosts(String keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);

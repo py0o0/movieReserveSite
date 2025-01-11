@@ -311,4 +311,29 @@ public class PostService {
                 "user", userList
         ));
     }
+
+    public ResponseEntity<?> searchByNickname(String nickname, PageRequest pageable) {
+        List<Long> userIdList = userRepository.findByNickname(nickname);
+
+
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
+        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
+        Page<Post> postPage = postRepository.findByUserIdIn(userIdList, pageableByIdDesc);
+        List<UserDto> userList = new ArrayList<>();
+        for(Post post : postPage.getContent()) {
+            User user = userRepository.findByUserId(post.getUserId());
+            UserDto userDto = new UserDto();
+            userDto.setNickname(user.getNickname());
+            userDto.setId(user.getId());
+            userList.add(userDto);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "post", postPage,
+                "user", userList
+        ));
+    }
 }

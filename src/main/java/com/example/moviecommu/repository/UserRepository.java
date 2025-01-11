@@ -36,4 +36,6 @@ public interface UserRepository {
     void deleteGgim(Map<String, Object> params);
 
     List<GgimMovieDto> getGgimMovie(long userId);
+
+    List<Long> findByNickname(String nickname);
 }
