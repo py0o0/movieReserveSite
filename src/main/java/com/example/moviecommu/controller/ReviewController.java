@@ -25,8 +25,9 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/movie/{id}/delete")
+    @PostMapping("/movie/{movieId}/delete")
     public void deleteReview(@RequestParam Long userId, @PathVariable Long movieId) {
+        System.out.println(movieId);
         reviewService.deleteReview(userId, movieId);
     }
 }
