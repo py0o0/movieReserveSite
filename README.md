@@ -44,18 +44,19 @@
 
 ## PostController API
 
-| **Endpoint**             | **Method** | **Description**                            | **Request Parameters**                                              | **Response**                                                                                   |
-|--------------------------|------------|--------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| `/posts/write`           | `POST`     | 게시글 작성 (이미지 파일 첨부 가능)         | `title` (String), `content` (String), `files` (List of MultipartFile)| `200 OK`: 성공 응답 반환                                                                        |
-| `/posts/{postId}`        | `GET`      | 게시글 상세 조회 (댓글 포함 예정)           | `postId` (Long)                                                     | `200 OK`: 게시글 상세 정보 반환                                                                |
-| `/posts/update/{postId}` | `PUT`      | 게시글 수정                                | `postId` (Long), `title` (String), `content` (String)               | `200 OK`: 수정된 게시글 반환                                                                   |
-| `/posts/delete/{postId}` | `POST`     | 게시글 삭제                                | `postId` (Long)                                                     | `200 OK`: 삭제 성공 응답 반환                                                                  |
-| `/posts/like`            | `POST`     | 게시글 좋아요                              | `postId` (Long), `username` (String)                                | `200 OK`: 좋아요 처리 성공                                                                     |
-| `/posts/list/page`       | `GET`      | 게시글 전체 조회 (페이지네이션)            | `page` (int), `size` (int)                                          | `200 OK`: 페이지네이션된 게시글 목록 반환 (Page of `PostDto`)                                  |
-| `/posts/search/title`    | `GET`      | 제목으로 게시글 검색                       | `keyword` (String), `page` (int), `size` (int)                      | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
-| `/posts/search/content`  | `GET`      | 내용으로 게시글 검색                       | `keyword` (String), `page` (int), `size` (int)                      | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
-| `/posts/search/username` | `GET`      | 작성자(username)로 게시글 검색             | `username` (String), `page` (int), `size` (int)                     | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto` )                                          |
-| `/posts/search`          | `GET`      | 제목 또는 내용으로 게시글 검색             | `keyword` (String), `page` (int), `size` (int)                      | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
+| **Endpoint**             | **Method** | **Description**       | **Request Parameters**                                                | **Response**                                                                                   |
+|--------------------------|------------|-----------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `/posts/write`           | `POST`     | 게시글 작성 (이미지 파일 첨부 가능) | `title` (String), `content` (String), `files` (List of MultipartFile) | `200 OK`: 성공 응답 반환                                                                        |
+| `/posts/{postId}`        | `GET`      | 게시글 상세 조회 (댓글 포함 예정)  | `postId` (Long)                                                       | `200 OK`: 게시글 상세 정보 반환                                                                |
+| `/posts/update/{postId}` | `PUT`      | 게시글 수정                | `postId` (Long), `title` (String), `content` (String)                 | `200 OK`: 수정된 게시글 반환                                                                   |
+| `/posts/delete/{postId}` | `POST`     | 게시글 삭제                | `postId` (Long)                                                       | `200 OK`: 삭제 성공 응답 반환                                                                  |
+| `/posts/like`            | `POST`     | 게시글 좋아요               | `postId` (Long), `username` (String)                                  | `200 OK`: 좋아요 처리 성공                                                                     |
+| `/posts/list/page`       | `GET`      | 게시글 전체 조회 (페이지네이션)    | `page` (int), `size` (int)                                            | `200 OK`: 페이지네이션된 게시글 목록 반환 (Page of `PostDto`)                                  |
+| `/posts/search/title`    | `GET`      | 제목으로 게시글 검색           | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
+| `/posts/search/content`  | `GET`      | 내용으로 게시글 검색           | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
+| `/posts/search/username` | `GET`      | 작성자(username)로 게시글 검색 | `username` (String), `page` (int), `size` (int)                       | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto` )                                          |
+| `/posts/search/nickname` | `GET`      | 작성자(nickname)로 게시글 검색 | `nickname` (String), `page` (int), `size` (int)                       | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto` )                                          |
+| `/posts/search`          | `GET`      | 제목 또는 내용으로 게시글 검색     | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
 
 ---
 

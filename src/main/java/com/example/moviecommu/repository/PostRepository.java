@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface PostRepository extends JpaRepository<Post, Long>,
         PagingAndSortingRepository<Post, Long> {
 
@@ -27,4 +29,6 @@ public interface PostRepository extends JpaRepository<Post, Long>,
     );
 
     Page<Post> findByUserId(long userId, Pageable pageable);
+
+    Page<Post> findByUserIdIn(List<Long> userIdList, Pageable pageableByIdDesc);
 }
