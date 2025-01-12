@@ -42,8 +42,8 @@ public class ReviewService {
                 .up(reviewDto.getUp())
                 .down(reviewDto.getDown())
                 .build();
-        reviewRepository.save(review);
         movieRepository.addRating(movieId, reviewDto.getRating());
+        reviewRepository.save(review);
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {

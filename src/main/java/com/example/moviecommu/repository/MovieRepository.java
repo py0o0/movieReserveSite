@@ -2,6 +2,7 @@ package com.example.moviecommu.repository;
 
 import com.example.moviecommu.entity.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m ORDER BY m.rating DESC LIMIT 20")
     List<Movie> findTopTwentyOrderByRatingDesc();
 
+    @Modifying
     @Query("UPDATE Movie m SET m.headCount = m.headCount + 1, m.rating = ((m.rating * 10000) + :score) / (m.headCount + 1) WHERE m.movieId = :movieId")
     void addRating(@Param("movieId")Long movieId, @Param("score")float score);
 }
