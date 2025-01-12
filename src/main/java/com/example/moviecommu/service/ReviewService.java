@@ -47,10 +47,10 @@ public class ReviewService {
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {
-//        Long currentUserId = userUtil.getCurrentUsername();
-//        if (!Objects.equals(requestedUserId, currentUserId)) {
-//            return;
-//        }
+        Long currentUserId = userUtil.getCurrentUsername();
+        String role = userUtil.getCurrentUserRole();
+        if (!Objects.equals(requestedUserId, currentUserId) && !role.equals("ROLE_ADMIN"))
+            return;
         reviewRepository.deleteByIds(movieId, requestedUserId);
     }
 
