@@ -29,20 +29,18 @@ public class ReviewService {
     private final MovieRepository movieRepository;
 
 
-    public void writeReview(ReviewDto reviewDto, Long movieId) {
+    public void writeReview(String content, float rating, Long movieId) {
         Long currentUserId = userUtil.getCurrentUsername();
-        if (!Objects.equals(reviewDto.getUserId(), currentUserId)) {
-            return;
-        }
+
         Review review = Review.builder()
                 .userId(currentUserId)
-                .movieId(reviewDto.getMovieId())
-                .content(reviewDto.getContent())
-                .rating(reviewDto.getRating())
-                .up(reviewDto.getUp())
-                .down(reviewDto.getDown())
+                .movieId(movieId)
+                .content(content)
+                .rating(rating)
+                .up(0)
+                .down(0)
                 .build();
-        movieRepository.addRating(movieId, reviewDto.getRating());
+        movieRepository.addRating(movieId, rating);
         reviewRepository.save(review);
     }
 

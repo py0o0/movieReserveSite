@@ -14,8 +14,9 @@ public class ReviewController {
     }
 
     @PostMapping("/movie/{id}/write")
-    public ResponseEntity<Void> addReview(@RequestBody ReviewDto reviewDto, @PathVariable Long id) {
-        reviewService.writeReview(reviewDto, id);
+    public ResponseEntity<Void> addReview(String content, float rating, @PathVariable Long id) {
+        reviewService.writeReview(content, rating, id);
+
         return ResponseEntity.ok().build();
     }
 
