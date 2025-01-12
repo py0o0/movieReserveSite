@@ -58,4 +58,8 @@
                  JOIN movie m ON mg.movieId = m.movie_id
         WHERE mg.userId = #{userId}
     </select>
+
+    <select id="findByNickname" parameterType="String" resultType="Long">
+        select userId from user_table where nickname like CONCAT('%', #{nickname}, '%')
+    </select>
 </mapper>
