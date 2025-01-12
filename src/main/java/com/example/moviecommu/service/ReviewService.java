@@ -47,11 +47,11 @@ public class ReviewService {
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {
-        Long currentUserId = userUtil.getCurrentUsername();
-        if (!Objects.equals(requestedUserId, currentUserId)) {
-            return;
-        }
-        reviewRepository.deleteByIds(movieId, currentUserId);
+//        Long currentUserId = userUtil.getCurrentUsername();
+//        if (!Objects.equals(requestedUserId, currentUserId)) {
+//            return;
+//        }
+        reviewRepository.deleteByIds(movieId, requestedUserId);
     }
 
     public void updateReview(ReviewDto reviewDto, Long movieId) {
