@@ -73,7 +73,7 @@
 
 | **Endpoint**         | **Method** | **Description**   | **Request Parameters**            | **Response**       |
 |----------------------|------------|-------------------|-----------------------------------|--------------------|
-| `/movie/{id}/write`  | `POST`     | 영화 상세 페이지 내 리뷰 작성 | `reviewDto`, `movieId` (Long)     | `200 OK`: 성공 응답 반환 |
+| `/movie/{id}/write`  | `POST`     | 영화 상세 페이지 내 리뷰 작성 | `content` (String) `rating` (float), `movieId` (Long)     | `200 OK`: 성공 응답 반환 |
 | `/movie/{id}/update` | `PUT`      | 리뷰 수정             | `reviewDto`, `movieId` (Long)     | `200 OK`: 영화 리뷰 수정 |
 | `/movie/{id}/delete` | `POST`     | 리뷰 삭제             | `userId` (Long), `movieId` (Long) | `200 OK`: 영화 리뷰 삭제 |
 
