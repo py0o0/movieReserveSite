@@ -85,7 +85,7 @@
 <br>
 
  ## ERD
-<img src= "https://github.com/user-attachments/assets/b30cadff-5cd9-497a-a7bd-99b0ed5883ae" alt="DB" width="100%" height="auto">
+<img src= "https://github.com/user-attachments/assets/858655d4-eaad-4c74-9759-544628c65456" alt="DB" width="100%" height="auto">
 
 <br>
 
