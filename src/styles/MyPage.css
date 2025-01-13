@@ -1,0 +1,174 @@
+.my-page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.my-page-container h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+/* 탭 스타일링 */
+.nav-tabs {
+    border-bottom: 2px solid #007bff;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    background: none;
+    border-bottom: 3px solid #007bff;
+}
+
+/* 카드 스타일링 */
+.list-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+    height: 100%;
+    margin-bottom: 0;
+}
+
+.list-item:hover {
+    border-left-color: #007bff;
+    transform: translateX(5px);
+    background-color: #f8f9fa;
+}
+
+.list-item .card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.list-item .card-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.list-item .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item .btn {
+    margin-top: auto;
+    width: fit-content;
+}
+
+/* 다크 모드 대응 */
+[data-bs-theme="dark"] .my-page-container h2 {
+    color: #fff;
+}
+
+[data-bs-theme="dark"] .list-item:hover {
+    background-color: #343a40;
+}
+
+[data-bs-theme="dark"] .list-item .card-text {
+    color: #adb5bd;
+}
+
+/* 예매 취소 버튼 스타일 추가 */
+.list-item .btn-danger {
+    margin-top: 1rem;
+}
+
+[data-bs-theme="dark"] .list-item .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+[data-bs-theme="dark"] .list-item .btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* 팔로우/팔로워 관련 스타일 추가 */
+.list-item .btn-outline-primary,
+.list-item .btn-outline-danger {
+    margin-top: 0.5rem;
+}
+
+[data-bs-theme="dark"] .list-item {
+    background-color: #2b3035;
+    border-color: #373b3e;
+}
+
+/* 팔로우/팔로워 카드 스타일 수정 */
+.list-container .row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+.list-container .col {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+/* 반응형 그리드 간격 조정 */
+@media (max-width: 768px) {
+    .list-container .row {
+        margin-right: -5px;
+        margin-left: -5px;
+    }
+
+    .list-container .col {
+        padding-right: 5px;
+        padding-left: 5px;
+        margin-bottom: 10px;
+    }
+}
+
+.profile-card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-info {
+    margin-bottom: 1.5rem;
+}
+
+.profile-info p {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+[data-bs-theme="dark"] .profile-info p {
+    border-bottom-color: #2b3035;
+}
+
+.profile-card .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.profile-card .btn-danger {
+    margin-left: auto;
+}
+
+[data-bs-theme="dark"] .profile-card .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+[data-bs-theme="dark"] .profile-card .btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+.profile-card .d-flex.gap-2 {
+    margin-top: 1rem;
+} 

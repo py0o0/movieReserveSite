@@ -1,0 +1,17 @@
+.movie-list-poster {
+  height: 400px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.movie-list-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.movie-rating {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+} 
