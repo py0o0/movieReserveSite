@@ -198,6 +198,7 @@ public class PostService {
             userDto.setNickname(user.getNickname());
             userDto.setId(user.getId());
             userList.add(userDto);
+
         }
 
         return ResponseEntity.ok(Map.of(
