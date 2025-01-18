@@ -10,4 +10,6 @@ public interface ScheduleRepository {
     List<Schedule> findByMovieId(int movieId);
 
     int findBySId(long scheduleId);
+
+    int findByScheduleId(long scheduleId);
 }

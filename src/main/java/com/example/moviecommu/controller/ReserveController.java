@@ -18,8 +18,7 @@ public class ReserveController {
     private final ReserveService reserveService;
 
     @GetMapping("/schedule") //인풋으로 받은 movieId의 스케쥴 정보를 오늘 날짜 기준 5일 후 까지 출력
-    public List<ScheduleHallDto> schedule(int movieId) {
-        return reserveService.schedule(movieId);
+    public List<ScheduleHallDto> schedule(int movieId) {return reserveService.schedule(movieId);
     }
 
     @GetMapping("/reservedSeat") //선택한 스케쥴에 이미 예매된 좌석 출력

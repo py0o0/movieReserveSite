@@ -13,4 +13,8 @@
     <select id="findBySId" parameterType="Long" resultType="Integer">
         select count(*) from schedule where scheduleId=#{scheduleId}
     </select>
+
+    <select id="findByScheduleId" parameterType="Long" resultType="Integer">
+        select movieId from schedule where scheduleId=#{scheduleId}
+    </select>
 </mapper>
