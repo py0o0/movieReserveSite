@@ -1,184 +1,159 @@
+# 목차
+
+1. [프로젝트 목적](#프로젝트-목적)
+2. [프로젝트 소개](#프로젝트-소개)
+3. [기술 스택](#기술-스택)
+4. [주요 기능](#주요-기능)
+5. [API 명세](#api-명세)
+6. [SnapShot](#snapshot)
+<br></br>
+
+# 프로젝트 목적
+리액트와 통신하는 rest api 스프링 서버 학습
+<br></br>
+# 프로젝트 소개
+
+영화에 대한 정보를 얻을 수 있는 사이트입니다.
+
+이 사이트는 사용자들이 사담을 나눌 수 있는 자유게시판, 영화 정보를 얻을 수 있는 영화 목록 게시판, 현재 상영 중인 영화를 예매할 수 있는 기능을 제공합니다.
+<br></br>
+## 개발 기간
+
+25.01.06 ~ 25.01.13 (1주)
+<br></br>
+## 팀원
+
+| Backend | Backend | Backend | Frontend | Frontend | 
+|:-------:|:-------:|:-------:|:-------:|:-------:|
+| <img src="https://github.com/user-attachments/assets/03b048bc-9299-4c6b-a084-57fbc3da9499" alt="증사 2" width="150" height="200"> | <img src="https://github.com/user-attachments/assets/44c5ca02-64c7-4a53-8e27-dc125462651d" alt="프로필" width="170" height="200"> |  <img src="https://github.com/user-attachments/assets/44c5ca02-64c7-4a53-8e27-dc125462651d" alt="프로필" width="170" height="200"> | <img src="https://github.com/user-attachments/assets/44c5ca02-64c7-4a53-8e27-dc125462651d" alt="프로필" width="170" height="200"> | <img src="https://github.com/user-attachments/assets/44c5ca02-64c7-4a53-8e27-dc125462651d" alt="프로필" width="170" height="200"> |
+| [채승표](https://github.com/py0o0)  | [안병욱](https://github.com/ByeongukYun)  |[이은비](https://github.com/eunqoo)  |[한신](https://github.com/Shining17)  |[백욱진](https://github.com/ukjinSPACE)  |
+
+<br></br>
+
+## 역할 분담
+
+### 🍊채승표
+
+- **기능**
+    - 유저 관련 기능
+        -  회원 가입(관리자 포함), 로그인, 정보 수정, 탈퇴, 팔로우, 특정 유저의 팔로우/팔로워 불러오기, 유저 목록 불러오기, 접근 권한 설정 
+    - 게시글 관련 기능
+        -  게시글  crud (이미지 첨부 가능), 게시글 상세 확인, 게시글 좋아요, 특정 유저가 작성한 글 불러오기, 내가 좋아한 글 불러오기
+    - 예매 관련 기능
+        -   영화 스케쥴, 홀 정보, 좌석 정보 전처리, 영화 스케쥴 불러오기, 특정 스케쥴의 상영 홀 정보 불러오기, 예매하기, 내가 예매한 영화 불러오기
+    - 영화 관련 기능
+        -   찜 ,내가 찜한 영화 불러오기
+
+<br>
+    
+### 👻윤병욱
+
+- **기능**
+    - 영화 데이터 전처리
+        - ERD 스키마 <-> SQL DB간 대응
+        - aws rds 인스턴스 운용
+    - 영화 관련 기능
+        - 영화 전체 목록 불러오기
+        - 영화 평점 랭킹 TOP 10 불러오기
+        - 검색(제목, 감독, 배우) 기능
+        - 영화 상세 정보 (리뷰 포함)
+    - 리뷰 관련 기능
+        - 리뷰 CRUD
+
+<br>
+
+### 😎이은비
+
+- **기능**
+    - 게시글  crud, 게시글 상세 확인, 게시글 조회수, 댓글 crud
+
+<br>
+
+### 🐬한신
+
+- **UI**
+    - 페이지 : 게시글 페이지, 영화 목록 페이지, 예매 페이지
+
+<br>
+
+ ### 🦊백욱진
+
+- **UI**
+    - 페이지 : 마이 페이지, 관리자 페이지, 회원 관리 및 인증 페이지
+   
+<br>
+<br>
+
+ ## ERD
+<img src= "https://github.com/user-attachments/assets/858655d4-eaad-4c74-9759-544628c65456" alt="DB" width="100%" height="auto">
+
+<br>
+
+# 기술 스택
+
+## **백엔드**
+- ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white)
+- ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=SpringSecurity&logoColor=white)
+- ![JPA](https://img.shields.io/badge/JPA-6DB33F?style=flat-square&logo=Hibernate&logoColor=white)
+- ![MyBatis](https://img.shields.io/badge/MyBatis-000000?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mNgGAWjYBSMglEwCgAAGBQAE3AAhL8AAAAASUVORK5CYII=&logoColor=white)
+- ![AWS RDS](https://img.shields.io/badge/AWS%20RDS-FF9900?style=flat-square&logo=AmazonAWS&logoColor=white)
+- ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white)
+- ![Java](https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white)
+
+## **프론트엔드**
+- ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white)
+- ![ES6](https://img.shields.io/badge/ES6-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white)
+- ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=flat-square&logo=Bootstrap&logoColor=white)
+- ![AJAX](https://img.shields.io/badge/AJAX-0086FF?style=flat-square&logo=AJAX&logoColor=white)
+
+## **협업 툴**
+- ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white)
+
+## **개발 툴**
+- ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat-square&logo=VisualStudioCode&logoColor=white)
+- ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=flat-square&logo=IntelliJIDEA&logoColor=white)
+  
+ <br></br>
+# 주요 기능
+
+## 1. 회원 관리
+- 회원가입, 로그인, 로그아웃, 회원탈퇴
+- 회원 정보 수정  
+- 팔로우/언팔로우 기능  
+
+## 2. 게시판 기능
+- 게시글 CRUD (작성, 조회, 수정, 삭제)  
+- 댓글 작성 및 관리  
+- 좋아요 기능  
+- 조회수 카운트  
+- 게시글 검색 (제목, 내용, 작성자 기반)  
+- 이미지 파일 업로드 기능  
+
+## 3. 영화 게시판 기능
+- 전처리된 영화 정보 조회  
+- 영화 리뷰 작성 및 조회  
+- 영화 정보 검색  
+
+## 4. 예매 기능
+- 상영 중인 영화 스케줄 조회  
+- 상영관 선택 및 영화 예매  
+
+## 5. 마이페이지
+- 좋아요한 글 목록  
+- 작성한 글 목록  
+- 팔로우/팔로워 리스트 조회  
+- 찜한 영화 목록  
+- 예매한 영화 내역 조회  
+
+## 6. 관리자 페이지
+- 유저 강제 탈퇴 기능  
+- 관리자 계정 생성 기능  
+ <br></br>
+
 # API 명세
 
-## UserController API
+[API 명세 바로가기](https://patch-brochure-60e.notion.site/API-17a3e509776d8021ba21fec75f953ff0?pvs=4)
 
-| **Endpoint**          | **Method** | **Description**    | **Request Parameters**                          | **Response**                                                           |
-|-----------------------|------------|--------------------|-------------------------------------------------|------------------------------------------------------------------------|
-| `/do`                 | `GET`      | 현재 사용자 정보 반환       | `없음                                             | `200 OK`: 'UserDto' 반환                                                 |
-| `/join`               | `POST`     | 새로운 사용자 가입 처리      | `UserDto`                                       | `200 OK`: `"joined"` 반환 <br> `401 Unauthorized`: `"join failed"` 반환    |
-| `/user/update`        | `POST`     | 사용자 정보 업데이트        | `UserDto`                                       | `200 OK`: `"updated"` 반환 <br> `400 Bad Request`: `"update failed"` 반환  |
-| `/user/delete`        | `POST`     | 사용자를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환  |
-| `/follow`             | `POST`     | 사용자를 팔로우하거나 팔로우 취소 | `username` (String)                             | `200 OK`: `"followed"` 반환 <br> `400 Bad Request`: `"follow failed"` 반환 |
-| `/follower/delete`    | `POST`     | 팔로워를 삭제            | `username` (String)                             | `200 OK`: `"deleted"` 반환 <br> `400 Bad Request`: `"delete failed"` 반환  |
-| `/followingList`      | `GET`      | 팔로잉 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                 |
-| `/followerList`       | `GET`      | 팔로워 목록 조회 (페이징)    | `username` (String), `size` (int), `page` (int) | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                 |
-| `/userPage`           | `GET`      | 사용자 페이지 정보 반환      | `username` (String)                             | `200 OK`: `{ "following": 팔로잉 수, "followers": 팔로워 수 }` 반환              |
-| `/myReserve`          | `GET`      | 현재 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
-| `/myReserve/previous` | `GET`      | 지난 예약 내역 조회        | 없음                                              | `200 OK`: `List<MyReserveDto>` 반환                                      |
-| `/like/post`          | `GET`      | 좋아한 게시글목록 출력       | `username` (String), `page` (int), `size` (int) | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                  |
-| `/ggim`               | `POST`     | 영화 찜               | `movieId` (int)                                 | `200 OK`: `"ggim"` 반환 <br> `400 Bad Request`: `"Already ggim"` 반환      |
-| `/ggim/delete`        | `POST`     | 영화 찜 취소            | `movieId` (int)                                 | `200 OK`: `"ggim deleted"` 반환 <br> `400 Bad Request`: `"Not ggim"` 반환  |
-| `/ggim/movie`         | `GET`      | 찜한 영화 불러오기         | 없음                                              | `200 OK`: 찜한 영화 목록 반환 (`GGimMovieDto`)                                 |
+# SnapShot
 
----
-
-## ReserveController API
-
-| **Endpoint**              | **Method** | **Description**                            | **Request Parameters**                                  | **Response**                                                                                       |
-|---------------------------|------------|--------------------------------------------|-------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `/schedule`               | `GET`      | 영화 상영 스케줄 조회                     | `movieId` (int)                                       | `200 OK`: 상영 스케줄 목록 반환 (List of `ScheduleHallDto`)                                        |
-| `/reservedSeat`           | `GET`      | 특정 상영 스케줄의 예약된 좌석 조회       | `scheduleId` (long)                                   | `200 OK`: 예약된 좌석 목록 반환 (List of `ReservedSeatDto`)                                       |
-| `/reserve`                | `POST`     | 영화 예약 처리                            | `ReserveDto` (JSON)                                   | `200 OK`: `"Reserved Successfully"` 반환 <br> `400 Bad Request`: `"Reservation Failed"` 반환       |
-| `/reserve/delete`         | `POST`     | 예약 취소                                 | `seatId` (String), `scheduleId` (long)               | `200 OK`: `"ReservedDelete Successfully"` 반환 <br> `400 Bad Request`: `"ReservedDelete Failed"`  |
-
----
-
-## AdminController API
-
-| **Endpoint**              | **Method** | **Description**                            | **Request Parameters**                                  | **Response**                                                                                       |
-|---------------------------|------------|--------------------------------------------|-------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `/admin/userManage`       | `GET`      | 모든 사용자 관리 (페이징)                  | `size` (int), `page` (int)                             | `200 OK`: `{ "userCnt": 총 사용자 수, "users": 사용자 목록 }` 반환                                   |
-| `/admin/join`             | `POST`     | 관리자로 사용자 가입                      | `UserDto`                                             | `200 OK`: `"joined"` 반환 <br> `400 Bad Request`: `"join failed"` 반환                              |
-
----
-
-## PostController API
-
-| **Endpoint**             | **Method** | **Description**       | **Request Parameters**                                                | **Response**                                                                                   |
-|--------------------------|------------|-----------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| `/posts/write`           | `POST`     | 게시글 작성 (이미지 파일 첨부 가능) | `title` (String), `content` (String), `files` (List of MultipartFile) | `200 OK`: 성공 응답 반환                                                                        |
-| `/posts/{postId}`        | `GET`      | 게시글 상세 조회 (댓글 포함 예정)  | `postId` (Long)                                                       | `200 OK`: 게시글 상세 정보 반환                                                                |
-| `/posts/update/{postId}` | `PUT`      | 게시글 수정                | `postId` (Long), `title` (String), `content` (String)                 | `200 OK`: 수정된 게시글 반환                                                                   |
-| `/posts/delete/{postId}` | `POST`     | 게시글 삭제                | `postId` (Long)                                                       | `200 OK`: 삭제 성공 응답 반환                                                                  |
-| `/posts/like`            | `POST`     | 게시글 좋아요               | `postId` (Long), `username` (String)                                  | `200 OK`: 좋아요 처리 성공                                                                     |
-| `/posts/list/page`       | `GET`      | 게시글 전체 조회 (페이지네이션)    | `page` (int), `size` (int)                                            | `200 OK`: 페이지네이션된 게시글 목록 반환 (Page of `PostDto`)                                  |
-| `/posts/search/title`    | `GET`      | 제목으로 게시글 검색           | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
-| `/posts/search/content`  | `GET`      | 내용으로 게시글 검색           | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
-| `/posts/search/username` | `GET`      | 작성자(username)로 게시글 검색 | `username` (String), `page` (int), `size` (int)                       | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto` )                                          |
-| `/posts/search/nickname` | `GET`      | 작성자(nickname)로 게시글 검색 | `nickname` (String), `page` (int), `size` (int)                       | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto` )                                          |
-| `/posts/search`          | `GET`      | 제목 또는 내용으로 게시글 검색     | `keyword` (String), `page` (int), `size` (int)                        | `200 OK`: 검색된 게시글 목록 반환 (Page of `PostDto` `userDto`)                                          |
-
----
-
-## MovieController API
-
-| **Endpoint**             | **Method** | **Description**       | **Request Parameters**                                | **Response**                                           |
-|--------------------------|------------|-----------------------|-------------------------------------------------------|--------------------------------------------------------|
-| `/movie`                 | `GET`      | 영화 랭킹                 | 없음                                                    | `200 OK`: 성공 응답 반환                                     |
-| `/movie/{id}`            | `GET`      | 특정 영화 상세 페이지(리뷰 포함)   | `movieId` (Long)                                          | `200 OK`: 영화 상세 정보 및 리뷰 반환                             |
-
----
-
-## ReviewController API
-
-| **Endpoint**         | **Method** | **Description**   | **Request Parameters**            | **Response**       |
-|----------------------|------------|-------------------|-----------------------------------|--------------------|
-| `/movie/{id}/write`  | `POST`     | 영화 상세 페이지 내 리뷰 작성 | `content` (String) `rating` (float), `movieId` (Long)     | `200 OK`: 성공 응답 반환 |
-| `/movie/{id}/update` | `PUT`      | 리뷰 수정             | `reviewDto`, `movieId` (Long)     | `200 OK`: 영화 리뷰 수정 |
-| `/movie/{id}/delete` | `POST`     | 리뷰 삭제             | `userId` (Long), `movieId` (Long) | `200 OK`: 영화 리뷰 삭제 |
-
----
-
-## SearchController API
-
-| **Endpoint**        | **Method** | **Description**   | **Request Parameters** | **Response**               |
-|---------------------|------------|-------------------|------------------------|----------------------------|
-| `/search/{word}`    | `GET`      | 통합검색(제목, 감독, 캐스팅) | `word` (String)        | `200 OK`: 검색 결과 반환         |
-
----
-
-
-## CommentController API
-
-| 엔드포인트 | 메소드 | 설명 | 요청 파라미터 | 응답 |
-|------------|--------|------|----------------|------|
-| `/api/comments/newcomment` | POST | 댓글 생성 | Query: `content`<br>Query: `postId`<br>Query: `username` | 200 OK |
-| `/api/comments/{commentId}` | PUT | 댓글 수정 | Path: `commentId`<br>Query: `content` | 200 OK |
-| `/api/comments/{id}` | DELETE | 댓글 삭제 | Path: `id` | 204 No Content |
-
-## DTO 클래스 정의
-
-| **Class Name**         | **Field Name**     | **Type**           | **Description**                                     |
-|------------------------|--------------------|--------------------|----------------------------------------------------|
-| **MyReserveDto**       | `seatId`          | `String`           | 좌석 ID                                            |
-|                        | `scheduleId`      | `Long`             | 상영 스케줄 ID                                     |
-|                        | `method`          | `String`           | 결제 방법                                          |
-|                        | `amount`          | `int`              | 결제 금액                                          |
-|                        | `pDate`           | `String`           | 결제 날짜                                          |
-|                        | `date`            | `String`           | 상영 날짜                                          |
-|                        | `startTime`       | `String`           | 상영 시작 시간                                     |
-|                        | `movieId`         | `int`              | 영화 ID                                            |
-|                        | `day`             | `String`           | 상영 요일                                          |
-|                        | `name`            | `String`           | 상영관 이름                                        |
-| **ReservedSeatDto**    | `seatId`          | `String`           | 예약된 좌석 ID                                     |
-| **ReserveDto**         | `method`          | `String`           | 결제 방법                                          |
-|                        | `amount`          | `int`              | 결제 금액                                          |
-|                        | `pDate`           | `String`           | 결제 날짜                                          |
-|                        | `scheduleId`      | `long`             | 상영 스케줄 ID                                     |
-|                        | `seatId`          | `String`           | 좌석 ID                                            |
-| **ScheduleHallDto**    | `scheduleId`      | `Long`             | 상영 스케줄 ID                                     |
-|                        | `hallId`          | `Long`             | 상영관 ID                                          |
-|                        | `movieId`         | `int`              | 영화 ID                                            |
-|                        | `startTime`       | `String`           | 상영 시작 시간                                     |
-|                        | `date`            | `String`           | 상영 날짜                                          |
-|                        | `day`             | `String`           | 상영 요일                                          |
-|                        | `price`           | `int`              | 영화 가격                                          |
-|                        | `name`            | `String`           | 상영관 이름                                        |
-| **UserDto**            | `id`              | `String`           | 사용자 ID                                          |
-|                        | `password`        | `String`           | 사용자 비밀번호                                    |
-|                        | `role`            | `String`           | 사용자 역할 (`ROLE_USER`, `ROLE_ADMIN` 등)         |
-|                        | `nickname`        | `String`           | 사용자 닉네임                                      |
-|                        | `phone`           | `String`           | 사용자 전화번호                                    |
-|                        | `birth`           | `String`           | 사용자 생년월일                                    |
-| **UserPageDto**        | `following`       | `long`             | 팔로잉 수                                          |
-|                        | `followers`       | `long`             | 팔로워 수                                          |
-| **UserPagingDto**      | `userCnt`         | `Long`             | 전체 사용자 수                                     |
-|                        | `users`           | `List<UserDto>`    | 사용자 목록                                        |
-| **PostDto**            | `postId`          | `long`             | 게시글 ID                                          |
-|                        | `userId`          | `long`             | 작성자 ID                                          |
-|                        | `title`           | `String`           | 게시글 제목                                        |
-|                        | `content`         | `String`           | 게시글 내용                                        |
-|                        | `created`         | `String`           | 게시글 작성일                                      |
-|                        | `cnt`             | `long`             | 게시글 조회수                                      |
-|                        | `heart`           | `long`             | 게시글 좋아요 수                                   |
-|                        | `fileAttached`    | `int`              | 첨부 파일 개수                                     |
-|                        | `files`           | `List<String>`     | 첨부된 파일 목록                                   |
-| **MovieDto**           | `movieId`         | `long`             | 영화 ID                                            |
-|                        | `title`           | `String`           | 제목                                               |
-|                        | `des`             | `String`           | 영화 설명                                          |
-|                        | `country`         | `String`           | 국가                                               |
-|                        | `director`        | `String`           | 감독                                               |
-|                        | `casting`         | `String`           | 캐스팅                                             |
-|                        | `genre`           | `String`           | 장르                                               |
-|                        | `rating`          | `float`            | 평점                                               |
-|                        | `releaseDate`     | `date`             | 개봉일                                             |
-|                        | `ageLimit`        | `int`              | 관람가                                             |
-|                        | `runningTime`     | `int`              | 상영시간                                           |
-|                        | `onAir`           | `int`              | 상영중 여부                                        |
-|                        | `headCount`       | `int`              | 영화별 총 평점수                                   |
-|                        | `posterUrl`       | `String`           | 포스터 사진 링크                                   |
-| **ReviewDto**          | `movieId`         | `long`             | 영화 ID                                            |
-|                        | `userId`          | `long`             | 작성자 ID                                          |
-|                        | `content`         | `String`           | 한줄평                                             |
-|                        | `rating`          | `float`            | 개인 평점                                          |
-|                        | `up`              | `int`              | 추천 갯수                                          |
-|                        | `down`            | `int`              | 비추천 갯수                                        |
-| **GgimMovieDto**       | `movieId`         | `Long`             | 영화 고유 ID                                       |
-|                        | `title`           | `String`           | 제목                                               |
-|                        | `des`             | `String`           | 영화 설명, 줄거리                                  |
-|                        | `country`         | `String`           | 국가                                               |
-|                        | `director`        | `String`           | 감독                                               |
-|                        | `casting`         | `String`           | 캐스팅 (배우 목록)                                 |
-|                        | `genre`           | `String`           | 장르                                               |
-|                        | `rating`          | `float`            | 평점                                               |
-|                        | `releaseDate`     | `Date`             | 개봉일                                             |
-|                        | `ageLimit`        | `int`              | 연령 제한                                          |
-|                        | `runningTime`     | `int`              | 상영 시간                                          |
-|                        | `onAir`           | `int`              | 상영 중 여부                                       |
-|                        | `headCount`       | `int`              | 평점 수                                            |
-|                        | `posterUrl`       | `String`           | 포스터 URL                                         |
-| **CommentDto**         | `commentId`       | `Long`             | 댓글 ID                                            |
-|                        | `content`         | `String`           | 댓글 내용                                          |
-|                        | `postId`          | `Long`             | 게시글 ID                                          |
-|                        | `userId`          | `Long`             | 작성자 ID                                          |
-
+[SnapShot 바로가기](https://patch-brochure-60e.notion.site/SnapShot-17e3e509776d80cea23cc7df82619998?pvs=74)
