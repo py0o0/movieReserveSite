@@ -64,6 +64,9 @@ public class UserService {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
             userDto.setNickname(user.getNickname());
+            userDto.setBirth(user.getBirth());
+            userDto.setPhone(user.getPhone());
+            userDto.setRole(user.getRole());
             userDtoList.add(userDto);
         }
 
@@ -126,6 +129,7 @@ public class UserService {
         for (User user : flwList) {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
             userDtoList.add(userDto);
         }
 
@@ -152,6 +156,7 @@ public class UserService {
         for (User user : flwList) {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
             userDtoList.add(userDto);
         }
         UserPagingDto userPagingDto = new UserPagingDto();
@@ -230,9 +235,51 @@ public class UserService {
         ));
     }
 
-//    public void insertMovie(MovieDto moviedto) {
-//     무비 dto에 파일의 파일명을 storedFileName=System.currentTimeMillis() + file.getOriginalFilename(); 로 수정
-        // 무비 엔티티로 바꾼후 경로는  String savePath = "C:/file_upload_test/" + storedFileName; 수정 후 file.transferTo(new File(savePath));
-    //무비 save하심됨
-//    }
+    public ResponseEntity<String> Ggim(int movieId) {
+        long userId = userUtil.getCurrentUsername();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("movieId", movieId);
+        if(userRepository.findByGgim(params) == 0) {
+            userRepository.Ggim(params);
+            return ResponseEntity.ok("Ggim");
+        }
+        return ResponseEntity.badRequest().body("Already Ggim");
+    }
+
+    public ResponseEntity<String> ggimdelete(int movieId) {
+        long userId = userUtil.getCurrentUsername();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("movieId", movieId);
+        if(userRepository.findByGgim(params) == 1) {
+            userRepository.deleteGgim(params);
+            return ResponseEntity.ok("Ggim delete");
+        }
+        return ResponseEntity.badRequest().body("Not Ggim");
+    }
+
+    public ResponseEntity<?> ggimMovie() {
+        long userId = userUtil.getCurrentUsername();
+        System.out.println(userId);
+        List<GgimMovieDto> ggimMovieList =userRepository.getGgimMovie(userId);
+
+        return ResponseEntity.ok(Map.of(
+                "movie", ggimMovieList
+        ));
+    }
+
+    public UserDto getUserInfo() {
+        long userId = userUtil.getCurrentUsername();
+
+        User user = userRepository.findByUserId(userId);
+        UserDto userDto = new UserDto();
+        userDto.setNickname(user.getNickname());
+        userDto.setId(user.getId());
+        userDto.setBirth(user.getBirth());
+        userDto.setPhone(user.getPhone());
+        userDto.setRole(user.getRole());
+        return userDto;
+    }
+
 }

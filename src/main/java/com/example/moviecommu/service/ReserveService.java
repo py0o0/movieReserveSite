@@ -4,16 +4,14 @@ import com.example.moviecommu.dto.MyReserveDto;
 import com.example.moviecommu.dto.ReserveDto;
 import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.dto.ScheduleHallDto;
-import com.example.moviecommu.entity.Hall;
-import com.example.moviecommu.entity.Reserve;
-import com.example.moviecommu.entity.Schedule;
-import com.example.moviecommu.repository.HallRepository;
-import com.example.moviecommu.repository.ReserveRepository;
-import com.example.moviecommu.repository.ScheduleRepository;
+import com.example.moviecommu.entity.*;
+import com.example.moviecommu.repository.*;
 import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +22,8 @@ public class ReserveService {
     private final HallRepository hallRepository;
     private final UserUtil userUtil;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
+    private final MovieRepository movieRepository;
 
     public List<ScheduleHallDto> schedule(int movieId) {
 
@@ -58,12 +58,23 @@ public class ReserveService {
         Reserve reserve = Reserve.builder()
                 .amount(reserveDto.getAmount())
                 .method(reserveDto.getMethod())
-                //.pDate(reserveDto.getPDate())
                 .userId(userId)
                 .seatId(reserveDto.getSeatId())
                 .scheduleId(reserveDto.getScheduleId())
                 .build();
-        if(reserveRepository.findBySeatId(reserve)!=0 || scheduleRepository.findBySId(reserve.getScheduleId()) == 0) //해당 자리
+
+        User user = userRepository.findByUserId(userId);
+        String birth = user.getBirth();
+
+        long movieId = scheduleRepository.findByScheduleId(reserve.getScheduleId());
+        Movie movie = movieRepository.findByMovieId(movieId);
+        int ageLimit = movie.getAgeLimit();
+
+        LocalDate birthDate = LocalDate.parse(birth);
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+
+
+        if(reserveRepository.findBySeatId(reserve)!=0 || scheduleRepository.findBySId(reserve.getScheduleId()) == 0 || age < ageLimit)
             return false;
 
         reserveRepository.save(reserve);

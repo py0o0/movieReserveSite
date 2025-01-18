@@ -40,4 +40,26 @@
         where l.userId = #{userId}
             LIMIT #{page},#{size}
     </select>
+
+    <select id="findByGgim" resultType="Integer">
+        select count(*) from movieGgim where userId=#{userId} and movieId = #{movieId}
+    </select>
+    <insert id="Ggim">
+        insert into movieGgim (userId,movieId)
+        values (#{userId}, #{movieId})
+    </insert>
+    <delete id="deleteGgim" >
+        delete from movieGgim where userId=#{userId} and movieId = #{movieId}
+    </delete>
+
+    <select id="getGgimMovie" parameterType="long" resultType="GgimMovieDto">
+        SELECT m.*
+        FROM movieGgim mg
+                 JOIN movie m ON mg.movieId = m.movie_id
+        WHERE mg.userId = #{userId}
+    </select>
+
+    <select id="findByNickname" parameterType="String" resultType="Long">
+        select userId from user_table where nickname like CONCAT('%', #{nickname}, '%')
+    </select>
 </mapper>

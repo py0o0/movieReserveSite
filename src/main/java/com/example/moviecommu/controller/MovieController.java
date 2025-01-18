@@ -28,7 +28,12 @@ public class MovieController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/movie")
+    @GetMapping("/movie/all")
+    public List<MovieDto> showAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GetMapping("/movie/rank")
     public List<MovieDto> showMovieRank() {
         return movieService.getTopTwenties();
     }
@@ -40,7 +45,7 @@ public class MovieController {
 
         return ResponseEntity.ok(Map.of(
                 "movie", movieDto,
-                "reviwe", reviewData
+                "review", reviewData
         ));
     }
 }

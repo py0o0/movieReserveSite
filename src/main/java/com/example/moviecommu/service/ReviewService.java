@@ -3,6 +3,8 @@ package com.example.moviecommu.service;
 import com.example.moviecommu.dto.ReviewDto;
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.Review;
+
+import com.example.moviecommu.repository.MovieRepository;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.ReviewRepository;
 import com.example.moviecommu.repository.UserRepository;
@@ -10,6 +12,7 @@ import com.example.moviecommu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,31 +24,31 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
     private final UserUtil userUtil;
+    private final UserRepository userRepository;
+    private final MovieRepository movieRepository;
 
-    public void writeReview(ReviewDto reviewDto, Long movieId) {
+    public void writeReview(String content, float rating, Long movieId) {
         Long currentUserId = userUtil.getCurrentUsername();
-        if (!Objects.equals(reviewDto.getUserId(), currentUserId)) {
-            return;
-        }
+
         Review review = Review.builder()
                 .userId(currentUserId)
-                .movieId(reviewDto.getMovieId())
-                .content(reviewDto.getContent())
-                .rating(reviewDto.getRating())
-                .up(reviewDto.getUp())
-                .down(reviewDto.getDown())
+                .movieId(movieId)
+                .content(content)
+                .rating(rating)
+                .up(0)
+                .down(0)
                 .build();
+        movieRepository.addRating(movieId, rating);
         reviewRepository.save(review);
     }
 
     public void deleteReview(Long requestedUserId, Long movieId) {
         Long currentUserId = userUtil.getCurrentUsername();
-        if (!Objects.equals(requestedUserId, currentUserId)) {
+        String role = userUtil.getCurrentUserRole();
+        if (!Objects.equals(requestedUserId, currentUserId) && !role.equals("ROLE_ADMIN"))
             return;
-        }
-        reviewRepository.deleteByIds(movieId, currentUserId);
+        reviewRepository.deleteByIds(movieId, requestedUserId);
     }
 
     public void updateReview(ReviewDto reviewDto, Long movieId) {
