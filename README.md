@@ -6,6 +6,7 @@
 4. [주요 기능](#주요-기능)
 5. [API 명세](#api-명세)
 6. [SnapShot](#snapshot)
+7. [시연 영상](#시연-영상)
 <br></br>
 
 # 프로젝트 목적
@@ -157,3 +158,7 @@
 # SnapShot
 
 [SnapShot 바로가기](https://patch-brochure-60e.notion.site/SnapShot-17e3e509776d80cea23cc7df82619998?pvs=74)
+
+# 시연 영상
+
+[시연 영상 바로가기](https://youtu.be/Pl9vYLuvfoY)
