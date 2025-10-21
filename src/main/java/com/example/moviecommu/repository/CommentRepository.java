@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// 댓글 데이터 접근 인터페이스 - 데이터베이스 연산을 위한 메서드 제공
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByPostId(long postId);

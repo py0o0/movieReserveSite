@@ -12,34 +12,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
 @Entity
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private long userId;
 
-    private String id;
+    private String email;
     private String password;
-    private String role;
     private String nickname;
     private String phone;
     private String birth;
-
-    @Builder
-    public User(String id, String password, String role, String nickname, String phone, String birth) {
-        this.id = id;
-        this.password = password;
-        this.role = role;
-        this.nickname = nickname;
-        this.phone = phone;
-        this.birth = birth;
-    }
-
-
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,7 +44,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userId.toString();
+        return email;
     }
 
     @Override

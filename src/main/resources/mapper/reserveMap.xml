@@ -19,10 +19,10 @@
     <select id="findByMyReserveLast" parameterType="Long" resultType="MyReserve">
         SELECT r.*, s.*, h.*
         FROM reserve r
-        JOIN schedule s ON r.scheduleId = s.scheduleId
-        JOIN hall h ON s.hallId = h.hallId
+                 JOIN schedule s ON r.scheduleId = s.scheduleId
+                 JOIN hall h ON s.hallId = h.hallId
         WHERE r.userId = #{userId}
-        AND  s.date >= CURRENT_DATE
+          AND  s.date >= CURRENT_DATE
     </select>
 
     <select id="findByMyReservePrevious" parameterType="Long" resultType="MyReserve">

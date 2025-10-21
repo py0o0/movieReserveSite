@@ -1,22 +1,38 @@
 package com.example.moviecommu.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-// 댓글 엔티티 - 데이터베이스의 댓글 테이블과 매핑
+import java.time.LocalDate;
+
 @Entity
-@Table(name = "comment")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private long commentId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     private String content;
+    private String createdAt;
 
-    private Long postId;
-
-    private Long userId;
-
+    @PrePersist
+    public void prePersist() {
+        // 현재 날짜를 "yyyy-MM-dd" 형식으로 설정
+        this.createdAt = LocalDate.now().toString();
+    }
 }
 

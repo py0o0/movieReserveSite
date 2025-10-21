@@ -15,74 +15,64 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/post")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    @PostMapping("/write") //게시글 작성 이미지 파일들 첨부 가능
-    public ResponseEntity<Void> createPost(String title, String content, List<MultipartFile> files) throws IOException {
-        postService.write(title, content, files);
-        return ResponseEntity.ok().build();
+    @PostMapping() //게시글 작성
+    public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token,
+            String title, String content) {
+        return postService.write(token, title, content);
     }
 
-    @GetMapping("/{postId}") //게시글 상세 조회, 나중에 댓글도 같이 전송
+    @GetMapping("/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
         return postService.getPostById(postId);
     }
 
-    @PutMapping("update/{postId}") //수정
-    public ResponseEntity<?> updatePost(@PathVariable Long postId, String title, String content) {
-        return postService.updatePost(postId, title, content);
+    @PutMapping("/{postId}") //수정
+    public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String token,
+                                        @PathVariable Long postId, String title, String content) {
+        return postService.updatePost(token, postId, title, content);
     }
 
-    @PostMapping("delete/{postId}") //삭제
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    @DeleteMapping("/{postId}") //삭제
+    public ResponseEntity<?> deletePost(@RequestHeader("Authorization") String token,
+                           @PathVariable Long postId) {
+        return postService.deletePost(token, postId);
     }
 
-    @PostMapping("/like")///좋아요
-    public void likePost(long postId, String username){
-        postService.likePost(postId, username);
-
+    @PostMapping("/{postId}}")//좋아요
+    public ResponseEntity<?> likePost(@RequestHeader("Authorization") String token,
+                         @PathVariable Long postId){
+        return postService.likePost(token, postId);
     }
 
-    @GetMapping("/list/page") //게시글 전체조회
-    public ResponseEntity<?> getPostsByPage(int page, int size) {
-        PageRequest pageRequest =  PageRequest.of(page, size);
-        return postService.getPostsByPage(pageRequest);
+    @GetMapping() //게시글 전체조회
+    public ResponseEntity<?> getPosts(int page, int size) {
+        return postService.getPosts(page, size);
     }
 
     @GetMapping("/search/title")// 제목으로 검색
     public ResponseEntity<?> searchByTitle(String keyword, int page, int size) {
-        System.out.println(keyword);
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return postService.searchByTitle(keyword, pageRequest);
+        return postService.searchByTitle(keyword, page, size);
     }
 
 
     @GetMapping("/search/content")// 내용으로 검색
     public ResponseEntity<?> searchByContent(String keyword, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return postService.searchByContent(keyword, pageRequest);
+        return postService.searchByContent(keyword, page, size);
     }
 
-    @GetMapping("/search/username")  // username으로 게시글 불러오기 검색도 가능
-    public ResponseEntity<?> searchByUsername(String username, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return postService.searchByUsername(username, pageRequest);
-    }
-
-    @GetMapping("/search/nickname")  // 닉네임으로 게시글 불러오기 검색도 가능
-    public ResponseEntity<?> searchByNickname(String nickname, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return postService.searchByNickname(nickname, pageRequest);
+    @GetMapping("/search/username")
+    public ResponseEntity<?> searchByEmail(String email, int page, int size) {
+        return postService.searchByEmail(email, page, size);
     }
 
     @GetMapping("/search")  // 제목 또는 내용으로 검색
-    public ResponseEntity<?> searchPosts(String keyword, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return postService.searchPosts(keyword, pageRequest);
+    public ResponseEntity<?> searchByTitleOrContent(String keyword, int page, int size) {
+        return postService.searchByTitleOrContent(keyword, page, size);
     }
 }

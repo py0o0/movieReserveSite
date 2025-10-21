@@ -6,32 +6,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/comment")
 public class CommentController {
     @Autowired
     private CommentService commentService;
 
     // 댓글 생성 기능
-    @PostMapping("/newcomment")
-    public void createComment(String content, Long postId, String username) {
-        commentService.createComment(content, postId, username);
+    @PostMapping("/{postId}")
+    public ResponseEntity<?> createComment(@RequestHeader("Authorization")String token,
+                              @PathVariable Long postId,
+                              String content) {
+        return commentService.createComment(token, postId, content);
     }
 
     // 댓글 수정 기능
     @PutMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(
-            @PathVariable Long commentId,
-            @RequestParam("content") String content
-    ) {
-        commentService.updateComment(commentId, content);
-        // 댓글 수정 로직
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateComment(@RequestHeader("Authorization")String token,
+            @PathVariable Long commentId, String content) {
+        return commentService.updateComment(token, commentId, content);
     }
 
     // 댓글 삭제 기능
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@RequestHeader("Authorization")String token,
+                                              @PathVariable Long commentId) {
+        return commentService.deleteComment(token, commentId);
     }
 }

@@ -8,7 +8,7 @@ import com.example.moviecommu.repository.MovieRepository;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.ReviewRepository;
 import com.example.moviecommu.repository.UserRepository;
-import com.example.moviecommu.util.UserUtil;
+import com.example.moviecommu.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +24,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final UserUtil userUtil;
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
 
-    public void writeReview(String content, float rating, Long movieId) {
-        Long currentUserId = userUtil.getCurrentUsername();
+    public void writeReview(String token, String content, float rating, Long movieId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
 
         Review review = Review.builder()
-                .userId(currentUserId)
+                .userId(user.getUserId())
                 .movieId(movieId)
                 .content(content)
                 .rating(rating)
@@ -43,16 +44,20 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public void deleteReview(Long requestedUserId, Long movieId) {
-        Long currentUserId = userUtil.getCurrentUsername();
-        String role = userUtil.getCurrentUserRole();
-        if (!Objects.equals(requestedUserId, currentUserId) && !role.equals("ROLE_ADMIN"))
+    public void deleteReview(String token, Long requestedUserId, Long movieId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+
+        String role = user.getRole();
+        if (!Objects.equals(requestedUserId, user.getUserId()) && !role.equals("ROLE_ADMIN"))
             return;
         reviewRepository.deleteByIds(movieId, requestedUserId);
     }
 
-    public void updateReview(ReviewDto reviewDto, Long movieId) {
-        Long currentUserId = userUtil.getCurrentUsername();
+    public void updateReview(String token, ReviewDto reviewDto, Long movieId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        Long currentUserId = user.getUserId();
         if (!Objects.equals(reviewDto.getUserId(), currentUserId)) {
             return;
         }
@@ -78,17 +83,19 @@ public class ReviewService {
                 .build();
     }
 
-    public ResponseEntity<?> findByMovieId(Long movieId) {
+    public ResponseEntity<?> findByMovieId(String token, Long movieId) {
         List<Review> reviewList = reviewRepository.findByMovieId(movieId);
         List<ReviewDto> reviewDtoList = new ArrayList<>();
         List<UserDto> userDtoList = new ArrayList<>();
 
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+
         reviewList.forEach(review -> {
             reviewDtoList.add(getReview(review));
-            User user = userRepository.findByUserId(review.getUserId());
             UserDto userDto = new UserDto();
             userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
+            userDto.setEmail(user.getEmail());
             userDtoList.add(userDto);
         });
         return ResponseEntity.ok(Map.of(

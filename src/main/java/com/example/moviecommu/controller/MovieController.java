@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -39,9 +40,10 @@ public class MovieController {
     }
 
     @GetMapping(value = "/movie/{movieId}", produces = "application/json; charset=UTF-8") //유저네임도 같이 반환
-    public ResponseEntity<?> showMovieDetail(@PathVariable("movieId") Long movieId){
+    public ResponseEntity<?> showMovieDetail(@RequestHeader("Authorization") String token,
+            @PathVariable("movieId") Long movieId){
         MovieDto movieDto = movieService.findByMovieId(movieId);
-        ResponseEntity<?> reviewData = reviewService.findByMovieId(movieId);
+        ResponseEntity<?> reviewData = reviewService.findByMovieId(token, movieId);
 
         return ResponseEntity.ok(Map.of(
                 "movie", movieDto,

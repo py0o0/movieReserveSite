@@ -6,7 +6,7 @@ import com.example.moviecommu.dto.ReservedSeatDto;
 import com.example.moviecommu.dto.ScheduleHallDto;
 import com.example.moviecommu.entity.*;
 import com.example.moviecommu.repository.*;
-import com.example.moviecommu.util.UserUtil;
+import com.example.moviecommu.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class ReserveService {
     private final ReserveRepository reserveRepository;
     private final HallRepository hallRepository;
-    private final UserUtil userUtil;
+    private final JwtUtil jwtUtil;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
@@ -53,17 +53,17 @@ public class ReserveService {
         return reserve;
     }
 
-    public boolean reserve(ReserveDto reserveDto) {
-        Long userId = userUtil.getCurrentUsername();
+    public boolean reserve(String token, ReserveDto reserveDto) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
         Reserve reserve = Reserve.builder()
                 .amount(reserveDto.getAmount())
                 .method(reserveDto.getMethod())
-                .userId(userId)
+                .userId(user.getUserId())
                 .seatId(reserveDto.getSeatId())
                 .scheduleId(reserveDto.getScheduleId())
                 .build();
 
-        User user = userRepository.findByUserId(userId);
         String birth = user.getBirth();
 
         long movieId = scheduleRepository.findByScheduleId(reserve.getScheduleId());
@@ -82,22 +82,25 @@ public class ReserveService {
         return true;
     }
 
-    public List<MyReserveDto> getMyReserve() {
-        Long userId = userUtil.getCurrentUsername();
-        return reserveRepository.findByMyReserveLast(userId);
+    public List<MyReserveDto> getMyReserve(String token) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        return reserveRepository.findByMyReserveLast(user.getUserId());
     }
 
-    public List<MyReserveDto> getMyReservePrevios() {
-        Long userId = userUtil.getCurrentUsername();
-        return reserveRepository.findByMyReservePrevious(userId);
+    public List<MyReserveDto> getMyReservePrevios(String token) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        return reserveRepository.findByMyReservePrevious(user.getUserId());
     }
 
-    public boolean reserveDelete(String seatId, long scheduleId) {
-        long userId = userUtil.getCurrentUsername();
+    public boolean reserveDelete(String token, String seatId, long scheduleId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
         Reserve reserve = Reserve.builder()
                 .seatId(seatId)
                 .scheduleId(scheduleId)
-                .userId(userId)
+                .userId(user.getUserId())
                 .build();
 
         if(reserveRepository.isReserved(reserve) == 0)

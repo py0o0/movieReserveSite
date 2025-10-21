@@ -3,23 +3,26 @@ package com.example.moviecommu.repository;
 import com.example.moviecommu.entity.Following;
 import com.example.moviecommu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
-@Mapper
-public interface FollowingRepository {
-    void save(Following follow); //팔로우 정보 저장
+@Repository
+public interface FollowingRepository extends JpaRepository<Following, Long> {
 
-    int findByFlw(Following follow); //팔로잉 정보 확인
+    Following findByUserAndFollowing(User user, User followingUser);
 
-    void deleteByFlw(Following follow); // 팔로잉 삭제
+    void deleteByUserAndFollowing(User user, User followingUser);
 
-    long flwingTotal(Long userId); //유저의 팔로잉 수
+    Page<Following> findByUser(User user, Pageable pageable);
 
-    List<User> findFlwingByUserId(Map<String, Object> params); //유저의 팔로잉 정보 추출(페이징)
+    Page<Following> findByFollowing(User user, Pageable pageable);
 
-    long flwerTotal(Long userId); // 유저의 팔로우 수
+    long countByUser(User user);
 
-    List<User> findFlwerByUserId(Map<String, Object> params); //유저의 팔로우 정보 추출(페이징)
+    long countByFollowing(User user);
 }

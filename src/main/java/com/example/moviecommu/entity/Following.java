@@ -1,9 +1,6 @@
 package com.example.moviecommu.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -16,12 +13,19 @@ public class Following {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flwId;
 
-    private Long userId;
-    private Long flwingId;
+    // 팔로우 하는 사람 (나)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // FK 이름
+    private User user;
+
+    // 팔로우 당하는 사람 (상대)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flwing_id") // FK 이름
+    private User following;
 
     @Builder
-    public Following(Long userId, Long flwingId) {
-        this.userId = userId;
-        this.flwingId = flwingId;
+    public Following(User user, User following) {
+        this.user = user;
+        this.following = following;
     }
 }

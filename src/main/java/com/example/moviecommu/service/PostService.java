@@ -5,12 +5,11 @@ import com.example.moviecommu.dto.PostDto;
 import com.example.moviecommu.dto.UserDto;
 import com.example.moviecommu.entity.Comment;
 import com.example.moviecommu.entity.Post;
-import com.example.moviecommu.entity.PostFile;
+import com.example.moviecommu.entity.PostHeart;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.*;
-import com.example.moviecommu.util.UserUtil;
+import com.example.moviecommu.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,323 +17,241 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostFileRepository postFileRepository;
-    private final UserUtil userUtil;
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final PostLikeRepository postLikeRepository;
+    private final PostHeartRepository postLikeRepository;
     private final CommentRepository commentRepository;
+    private final RedisService redisService;
+    private final PostHeartRepository postHeartRepository;
 
-    public void write (String title, String content, List<MultipartFile> files) throws IOException {
-        long userId = userUtil.getCurrentUsername();
+    // 게시글 작성
+    public ResponseEntity<?> write(String token, String title, String content){
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+
         Post post = Post.builder()
                 .title(title)
                 .content(content)
-                .userId(userId)
+                .heart(0L)
+                .view(0L)
+                .user(user)
+                .build();
+        postRepository.save(post);
+
+        PostDto postDto = PostDto.builder()
+                .title(title)
+                .content(content)
+                .heart(0L)
+                .view(0L)
+                .email(email)
+                .build();
+        return ResponseEntity.ok(postDto);
+    }
+
+    // 게시글 상세 조회 + 조회수 증가
+    public ResponseEntity<?> getPostById(Long postId) {
+        Post post = postRepository.findByIdJoinFetch(postId).get();
+
+        // 조회수 증가
+        redisService.incrementView(post.getPostId());
+
+        // 게시글 DTO
+        PostDto postDto = PostDto.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .heart(post.getHeart())
+                .view(post.getView())
+                .email(post.getUser().getEmail())
                 .build();
 
-        if(files == null) {
-            post = postRepository.save(post);
-            post.setFileAttached(0);
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for(Comment comment : post.getComments()){
+            CommentDto commentDto = CommentDto.builder()
+                    .commentId(comment.getCommentId())
+                    .postId(post.getPostId())
+                    .content(comment.getContent())
+                    .email(comment.getUser().getEmail())
+                    .build();
         }
-        else {
-            post.setFileAttached(1);
-            post = postRepository.save(post);
-            System.out.println(post.getPostId());
-            for(MultipartFile file : files) {
-                String storedFileName = System.currentTimeMillis() + file.getOriginalFilename();
-                String savePath = "C:/file_upload_test/" + storedFileName;
-                file.transferTo(new File(savePath));
-
-                PostFile postFile = new PostFile();
-                postFile.setFilePath(savePath);
-                postFile.setPostId(post.getPostId());
-                postFileRepository.save(postFile);
-            }
-        }
-
+        return ResponseEntity.ok(Map.of(
+                "post", postDto,
+                "comments", commentDtoList
+        ));
     }
 
-    // 게시글 상세 조회 및 조회수 증가
-    public ResponseEntity<?> getPostById(Long post_id) { // 다듬기 끗 댓글만 추가하셈
-        Optional<Post> optionalPost = postRepository.findById(post_id);
+    // 게시글 수정
+    public ResponseEntity<?> updatePost(String token, Long postId, String title, String content) {
+        Post post = postRepository.findById(postId).get();
 
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
 
-            PostDto postDto = new PostDto();
-            postDto.setPostId(post.getPostId());
-            postDto.setUserId(post.getUserId());
-            postDto.setTitle(post.getTitle());
-            postDto.setContent(post.getContent());
-            postDto.setCnt(post.getCnt());
-            postDto.setCreated(post.getCreated());
-            postDto.setHeart(post.getHeart());
-            postDto.setFileAttached(post.getFileAttached());
-
-            if(post.getFileAttached() == 1) {
-                List<String> filePath = new ArrayList<>();
-                List<PostFile> postFileList = postFileRepository.findByPostId(post_id);
-
-                for(PostFile postFile : postFileList) {
-                    filePath.add(postFile.getFilePath());
-                }
-                postDto.setFiles(filePath);
-
-            }
-            User user = userRepository.findByUserId(postDto.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-
-            post.setCnt(post.getCnt() + 1);
-            postRepository.save(post);
-
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-            List<CommentDto> commentDtoList = new ArrayList<>();
-            List<UserDto> userDtoList = new ArrayList<>();
-            for(Comment comment : commentList) {
-                CommentDto commentDto = new CommentDto();
-                commentDto.setCommentId(comment.getCommentId());
-                commentDto.setUserId(comment.getUserId());
-                commentDto.setContent(comment.getContent());
-                commentDtoList.add(commentDto);
-
-                User cUser = userRepository.findByUserId(comment.getUserId());
-                UserDto userDto2 = new UserDto();
-                userDto2.setNickname(cUser.getNickname());
-                userDto2.setId(cUser.getId());
-                userDtoList.add(userDto2);
-            }
-
-            return ResponseEntity.ok(Map.of(
-                    "post", postDto,
-                    "postUser", userDto,
-                    "comment", commentDtoList,
-                    "commentUser", userDtoList
-            ));
-
-        } else {
-            return ResponseEntity.badRequest().build();
+        if (!post.getUser().equals(user)) {
+            return ResponseEntity.badRequest().body("작성자만 수정 가능");
         }
-    }
-
-
-
-    public ResponseEntity<?> updatePost(Long id,String title, String content) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() ->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
-
-        long userId = userUtil.getCurrentUsername();
-        if(userId != post.getUserId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-
         post.setTitle(title);
         post.setContent(content);
         postRepository.save(post);
-        return ResponseEntity.ok(Map.of());
+
+        return ResponseEntity.ok().build();
     }
 
-    public void deletePost(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + id + " not found"));
+    // 게시글 삭제
+    public ResponseEntity<?> deletePost(String token, Long postId) {
+        Post post = postRepository.findById(postId).get();
 
-        long userId = userUtil.getCurrentUsername();
-        String role = userUtil.getCurrentUserRole();
-        if(userId != post.getUserId() && !role.equals("ROLE_ADMIN")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+
+        if (!post.getUser().equals(user)) {
+            return ResponseEntity.badRequest().body("작성자만 삭제 가능");
         }
 
         postRepository.delete(post);
+        return ResponseEntity.ok().build();
     }
 
-    public void likePost(long postId, String username) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post with ID " + postId + " not found"));
+    // 게시글 좋아요 토글
+    public ResponseEntity<?> likePost(String token, long postId) {
 
-        User user = userRepository.findById(username);
-        Long userId = user.getUserId();
+        Post post = postRepository.findByIdLock(postId).get(); // 좋아요 수 업데이트 동시성 문제 방지
 
-        Map<String,Object> map = new HashMap<>();
-        map.put("userId",userId);
-        map.put("postId",postId);
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
 
-        if(postLikeRepository.searchLike(map) == 0) {
-            postLikeRepository.save(map);
+        PostHeart postHeart = postHeartRepository.findByPostAndUser(post, user);
+
+        if(postHeart == null){
+            postHeart = PostHeart.builder()
+                    .post(post)
+                    .user(user)
+                    .build();
+            postHeartRepository.save(postHeart);
             post.setHeart(post.getHeart() + 1);
         }
+
         else{
-            postLikeRepository.delete(map);
+            postHeartRepository.delete(postHeart);
             post.setHeart(post.getHeart() - 1);
         }
         postRepository.save(post);
 
+        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> getPostsByPage(PageRequest pageable) {
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
+    // 페이징 조회
+    public ResponseEntity<?> getPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postList = postRepository.findAll(pageable);
 
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
-
-        Page<Post> postPage = postRepository.findAll(pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
-
+        List<PostDto> postDtoList = new ArrayList<>();
+        for(Post post : postList){
+            PostDto postDto = PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .heart(post.getHeart())
+                    .view(post.getView())
+                    .email(post.getUser().getEmail())
+                    .postId(post.getPostId())
+                    .build();
+            postDtoList.add(postDto);
         }
 
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
+        return ResponseEntity.ok(postDtoList);
     }
 
-    // 제목으로 검색
-    public ResponseEntity<?> searchByTitle(String keyword, PageRequest pageable) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
-        }
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
+    public ResponseEntity<?> searchByTitle(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
 
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
 
-        Page<Post> postPage = postRepository.findByTitleContaining(keyword, pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
+        List<PostDto> postDtoList = new ArrayList<>();
+        for(Post post : postList){
+            PostDto postDto = PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .heart(post.getHeart())
+                    .view(post.getView())
+                    .email(post.getUser().getEmail())
+                    .postId(post.getPostId())
+                    .build();
+            postDtoList.add(postDto);
         }
 
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
+        return ResponseEntity.ok(postDtoList);
     }
 
-    // 내용으로 검색
-    public ResponseEntity<?> searchByContent(String keyword, PageRequest pageable) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
-        }
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
+    public ResponseEntity<?> searchByContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postList = postRepository.findByContentContaining(keyword, pageable);
 
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
-        Page<Post> postPage = postRepository.findByContentContaining(keyword, pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
+
+        List<PostDto> postDtoList = new ArrayList<>();
+        for(Post post : postList){
+            PostDto postDto = PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .heart(post.getHeart())
+                    .view(post.getView())
+                    .email(post.getUser().getEmail())
+                    .postId(post.getPostId())
+                    .build();
+            postDtoList.add(postDto);
         }
 
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
+        return ResponseEntity.ok(postDtoList);
     }
 
-    // 제목 또는 내용으로 검색
-    public ResponseEntity<?> searchPosts(String keyword, PageRequest pageable) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비워둘 수 없습니다.");
-        }
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
+    public ResponseEntity<?> searchByTitleOrContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postList = postRepository.findByTitleOrContentContaining(keyword, pageable);
 
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
-        Page<Post> postPage = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
+
+        List<PostDto> postDtoList = new ArrayList<>();
+        for(Post post : postList){
+            PostDto postDto = PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .heart(post.getHeart())
+                    .view(post.getView())
+                    .email(post.getUser().getEmail())
+                    .postId(post.getPostId())
+                    .build();
+            postDtoList.add(postDto);
         }
 
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
+        return ResponseEntity.ok(postDtoList);
     }
 
-    public ResponseEntity<?> searchByUsername(String username, PageRequest pageable) {
-        User nUser = userRepository.findById(username);
-        if (nUser == null) {
-            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 유저");
-        }
-        long userId = nUser.getUserId();
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
+    public ResponseEntity<?> searchByEmail(String email, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        User user = userRepository.findByEmail(email);
+        Page<Post> postList = postRepository.findByUser(user ,pageable);
 
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
-        Page<Post> postPage = postRepository.findByUserId(userId, pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
+        List<PostDto> postDtoList = new ArrayList<>();
+        for(Post post : postList){
+            PostDto postDto = PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .heart(post.getHeart())
+                    .view(post.getView())
+                    .email(post.getUser().getEmail())
+                    .postId(post.getPostId())
+                    .build();
+            postDtoList.add(postDto);
         }
 
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
+        return ResponseEntity.ok(postDtoList);
     }
 
-    public ResponseEntity<?> searchByNickname(String nickname, PageRequest pageable) {
-        List<Long> userIdList = userRepository.findByNickname(nickname);
-
-
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
-
-        Sort sortByIdDesc = Sort.by(Sort.Order.desc("postId"));
-        Pageable pageableByIdDesc = PageRequest.of(page, size, sortByIdDesc);
-        Page<Post> postPage = postRepository.findByUserIdIn(userIdList, pageableByIdDesc);
-        List<UserDto> userList = new ArrayList<>();
-        for(Post post : postPage.getContent()) {
-            User user = userRepository.findByUserId(post.getUserId());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
-        }
-
-        return ResponseEntity.ok(Map.of(
-                "post", postPage,
-                "user", userList
-        ));
-    }
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,15 +28,17 @@ public class ReserveController {
     }
 
     @PostMapping("/reserve") //예매
-    public ResponseEntity<String> reserve(ReserveDto reserveDto){
-        if(reserveService.reserve(reserveDto))
+    public ResponseEntity<String> reserve(@RequestHeader("Authorization") String token,
+            ReserveDto reserveDto){
+        if(reserveService.reserve(token, reserveDto))
             return ResponseEntity.ok("Reserved Successfully");
         return ResponseEntity.badRequest().body("Reservation Failed");
     }
 
     @PostMapping("/reserve/delete") //예매취소
-    public ResponseEntity<String> reserveDelete(String seatId, long scheduleId){
-        if(reserveService.reserveDelete(seatId, scheduleId))
+    public ResponseEntity<String> reserveDelete(@RequestHeader("Authorization") String token,
+                                                String seatId, long scheduleId){
+        if(reserveService.reserveDelete(token, seatId, scheduleId))
             return ResponseEntity.ok("ReservedDelete Successfully");
         return ResponseEntity.badRequest().body("ReservedDelete Failed");
     }

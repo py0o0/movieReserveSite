@@ -1,8 +1,6 @@
 package com.example.moviecommu.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -10,14 +8,15 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostDto {
     private long postId;
-    private long userId;
+    private String email;
     private String title;
     private String content;
     private String created;
-    private long cnt;
+    private long view;
     private long heart;
-    private int fileAttached;
-    private List<String> files;
 }

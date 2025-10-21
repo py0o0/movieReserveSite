@@ -14,20 +14,23 @@ public class ReviewController {
     }
 
     @PostMapping("/movie/{id}/write")
-    public ResponseEntity<Void> addReview(String content, float rating, @PathVariable Long id) {
-        reviewService.writeReview(content, rating, id);
+    public ResponseEntity<Void> addReview(@RequestHeader("Authorization") String token,
+            String content, float rating, @PathVariable Long id) {
+        reviewService.writeReview(token, content, rating, id);
 
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/movie/{id}/update")
-    public ResponseEntity<Void> updateReview(@RequestBody ReviewDto reviewDto, @PathVariable Long id) {
-        reviewService.updateReview(reviewDto, id);
+    public ResponseEntity<Void> updateReview(@RequestHeader("Authorization") String token,
+                                             @RequestBody ReviewDto reviewDto, @PathVariable Long id) {
+        reviewService.updateReview(token, reviewDto, id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/movie/{movieId}/delete")
-    public void deleteReview(@RequestParam Long userId, @PathVariable Long movieId) {
-        reviewService.deleteReview(userId, movieId);
+    public void deleteReview(@RequestHeader("Authorization") String token,
+                             @RequestParam Long userId, @PathVariable Long movieId) {
+        reviewService.deleteReview(token, userId, movieId);
     }
 }

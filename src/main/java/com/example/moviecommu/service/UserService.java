@@ -2,11 +2,16 @@ package com.example.moviecommu.service;
 
 import com.example.moviecommu.dto.*;
 import com.example.moviecommu.entity.Following;
+import com.example.moviecommu.entity.PostHeart;
 import com.example.moviecommu.entity.User;
 import com.example.moviecommu.repository.FollowingRepository;
+import com.example.moviecommu.repository.PostHeartRepository;
 import com.example.moviecommu.repository.UserRepository;
-import com.example.moviecommu.util.UserUtil;
+import com.example.moviecommu.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,18 +22,21 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserUtil userUtil;
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final FollowingRepository followingRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PostHeartRepository postHeartRepository;
 
-    public boolean join(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId());
-        if(user != null)
-            return false;
+    public ResponseEntity<?> join(UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail());
 
-        User nUser = User.builder()
-                .id(userDto.getId())
+        if(user != null) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
+
+        user = User.builder()
+                .email(userDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_USER")
                 .birth(userDto.getBirth())
@@ -36,54 +44,43 @@ public class UserService {
                 .nickname(userDto.getNickname())
                 .build();
 
-        userRepository.saveUser(nUser);
-        return true;
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 
-    public boolean delete(String username) {
-        User user = userRepository.findById(username);
-        if(user==null)
-            return false;
-        if(!Objects.equals(user.getUserId(), userUtil.getCurrentUsername()) && !userUtil.getCurrentUserRole().equals("ROLE_ADMIN"))
-            return false;
-        userRepository.deleteById(username);
-        return true;
+    public ResponseEntity<?> delete(String token) {
+        String email = jwtUtil.getEmail(token);
+        userRepository.deleteByEmail(email);
+        return ResponseEntity.ok().build();
     }
 
-    public UserPagingDto getAll(int size, int page) {
-        Map<String, Object> params = new HashMap<>();
-        page = size * page;
-        params.put("size", size);
-        params.put("page", page);
+    public ResponseEntity<?> getAll(int size, int page) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        long total = userRepository.userTotal();
-        List<User> userList = userRepository.getAll(params);
-
+        Page<User> userList = userRepository.findAll(pageable);
         List<UserDto> userDtoList = new ArrayList<>();
         for (User user : userList) {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setNickname(user.getNickname());
-            userDto.setBirth(user.getBirth());
-            userDto.setPhone(user.getPhone());
-            userDto.setRole(user.getRole());
+            UserDto userDto = UserDto.builder()
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .birth(user.getBirth())
+                    .phone(user.getPhone())
+                    .nickname(user.getNickname())
+                    .userId(user.getUserId())
+                    .build();
             userDtoList.add(userDto);
         }
-
-        UserPagingDto userPagingDto = new UserPagingDto();
-        userPagingDto.setUsers(userDtoList);
-        userPagingDto.setUserCnt(total);
-
-        return userPagingDto;
+        return ResponseEntity.ok(userDtoList);
     }
 
-    public boolean adminJoin(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId());
-        if(user != null)
-            return false;
+    public ResponseEntity<?> adminJoin(UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail());
+        if(user != null) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
 
-        User nUser = User.builder()
-                .id(userDto.getId())
+        user = User.builder()
+                .email(userDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                 .role("ROLE_ADMIN")
                 .birth(userDto.getBirth())
@@ -91,152 +88,140 @@ public class UserService {
                 .nickname(userDto.getNickname())
                 .build();
 
-        userRepository.saveUser(nUser);
-        return true;
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 
-    public boolean follow(String username) {
-        User following = userRepository.findById(username);
-        Long userId = userUtil.getCurrentUsername();
-        if(userId == null || following == null || userId.equals(following.getUserId()))
-            return false;
+    public ResponseEntity<?> follow(String token, String email) {
+        String curUserEmail = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(curUserEmail);
 
-        Following follow = Following.builder()
-                .userId(userId)
-                .flwingId(following.getUserId())
-                .build();
-        if(followingRepository.findByFlw(follow) == 0)
-            followingRepository.save(follow);
-        else  followingRepository.deleteByFlw(follow);
-        return true;
+        User followingUser = userRepository.findByEmail(email);
+
+        Following following = followingRepository.findByUserAndFollowing(user, followingUser);
+        if(following == null) {
+            following = Following.builder()
+                    .user(user)
+                    .following(followingUser)
+                    .build();
+            followingRepository.save(following);
+        }
+        else{
+            followingRepository.delete(following);
+        }
+        return ResponseEntity.ok().build();
     }
 
-    public UserPagingDto getFollowingList(String username, int size, int page) {
-        User nUser = userRepository.findById(username);
-        Long userId = nUser.getUserId();
+    public ResponseEntity<?> getFollowingList(String token, int size, int page) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
 
-        Map<String, Object> params = new HashMap<>();
-        page = size * page;
+        Pageable pageable = PageRequest.of(page, size);
 
-        params.put("size", size);
-        params.put("page", page);
-        params.put("userId", userId);
-
-        long total = followingRepository.flwingTotal(userId);
-        List<User> flwList = followingRepository.findFlwingByUserId(params);
+        Page<Following> followingList = followingRepository.findByUser(user, pageable);
 
         List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : flwList) {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setNickname(user.getNickname());
+        for (Following following : followingList) {
+            UserDto userDto = UserDto.builder()
+                    .userId(following.getUser().getUserId())
+                    .email(following.getUser().getEmail())
+                    .build();
             userDtoList.add(userDto);
         }
 
-        UserPagingDto userPagingDto = new UserPagingDto();
-        userPagingDto.setUsers(userDtoList);
-        userPagingDto.setUserCnt(total);
-
-        return userPagingDto;
+        return ResponseEntity.ok().body(userDtoList);
     }
 
-    public UserPagingDto getFollowerList(String username, int size, int page) {
-        User nUser = userRepository.findById(username);
-        Long userId = nUser.getUserId();
-        Map<String, Object> params = new HashMap<>();
-        page = size * page;
-        params.put("size", size);
-        params.put("page", page);
-        params.put("userId", userId);
+    public ResponseEntity<?> getFollowerList(String token, int size, int page) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
 
-        long total = followingRepository.flwerTotal(userId);
-        List<User> flwList = followingRepository.findFlwerByUserId(params);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Following> followingList = followingRepository.findByFollowing(user, pageable);
 
         List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : flwList) {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setNickname(user.getNickname());
+        for (Following following : followingList) {
+            UserDto userDto = UserDto.builder()
+                    .userId(following.getUser().getUserId())
+                    .email(following.getUser().getEmail())
+                    .build();
             userDtoList.add(userDto);
         }
-        UserPagingDto userPagingDto = new UserPagingDto();
-        userPagingDto.setUsers(userDtoList);
-        userPagingDto.setUserCnt(total);
-        return userPagingDto;
+
+        return ResponseEntity.ok().body(userDtoList);
     }
 
-    public boolean flwerDelete(String username) {
-        Long userId = userUtil.getCurrentUsername();
-        User user = userRepository.findById(username);
-        if(userId==null || user==null) return false;
+    public ResponseEntity<?> flwerDelete(String token, String email) {
+        String curUserEmail = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(curUserEmail);
 
-        Following follow = Following.builder()
-                .userId(user.getUserId())
-                .flwingId(userId)
-                .build();
-        followingRepository.deleteByFlw(follow);
-        return true;
+        User followingUser = userRepository.findByEmail(email);
+
+        followingRepository.deleteByUserAndFollowing(user, followingUser);
+
+        return ResponseEntity.ok().build();
     }
 
-    public UserPageDto getUserPage(String username) {
-        User user = userRepository.findById(username);
-        Long userId = user.getUserId();
+    public ResponseEntity<?> getUserPage(String email) {
+        User user = userRepository.findByEmail(email);
 
-        long following = followingRepository.flwingTotal(userId);
-        long follower = followingRepository.flwerTotal(userId);
+        long following = followingRepository.countByUser(user);
+        long follower = followingRepository.countByFollowing(user);
 
-        return UserPageDto.builder()
+        UserPageDto userPageDto = UserPageDto.builder()
                 .followers(follower)
                 .following(following)
                 .build();
-    }
-
-    public boolean update(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId());
-        System.out.println(user);
-        if(user == null)
-            return false;
-
-        User nUser = User.builder()
-                .id(userDto.getId())
-                .birth(userDto.getBirth())
-                .phone(userDto.getPhone())
-                .nickname(userDto.getNickname())
+        UserDto userDto = UserDto.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .birth(user.getBirth())
                 .build();
-
-        userRepository.update(nUser);
-        return true;
-    }
-
-    public ResponseEntity<?> likePost(String username,int size, int page) {
-        User nUser = userRepository.findById(username);
-        Long userId = nUser.getUserId();
-        System.out.println(nUser);
-        Map<String, Object> params = new HashMap<>();
-        page = size * page;
-        params.put("size", size);
-        params.put("page", page);
-        params.put("userId", userId);
-
-        List<PostDtoMyBatis> postDtoList = userRepository.findByLikePost(params);
-        System.out.println(postDtoList);
-        List<UserDto> userList = new ArrayList<>();
-        for(PostDtoMyBatis postDto : postDtoList){
-            User user = userRepository.findByUserId(postDto.getUser_id());
-            UserDto userDto = new UserDto();
-            userDto.setNickname(user.getNickname());
-            userDto.setId(user.getId());
-            userList.add(userDto);
-        }
-
         return ResponseEntity.ok(Map.of(
-                "post", postDtoList,
-                "user", userList
+                "user", userDto,
+                "userPage", userPageDto
         ));
     }
 
-    public ResponseEntity<String> Ggim(int movieId) {
-        long userId = userUtil.getCurrentUsername();
+    public ResponseEntity<?> update(String token, UserDto userDto) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+
+        user.setNickname(userDto.getNickname());
+        user.setBirth(userDto.getBirth());
+        user.setPhone(userDto.getPhone());
+
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> likePost(String email,int size, int page) {
+        User user = userRepository.findByEmail(email);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<PostHeart> postHeartList = postHeartRepository.findByUser(user, pageable);
+
+        List<PostDto> postDtoList = new ArrayList<>();
+        for (PostHeart postHeart: postHeartList) {
+            PostDto postDto = PostDto.builder()
+                    .postId(postHeart.getPost().getPostId())
+                    .title(postHeart.getPost().getTitle())
+                    .view(postHeart.getPost().getView())
+                    .email(postHeart.getPost().getUser().getEmail())
+                    .heart(postHeart.getPost().getHeart())
+                    .build();
+            postDtoList.add(postDto);
+        }
+
+        return ResponseEntity.ok().body(postDtoList);
+    }
+
+    public ResponseEntity<String> Ggim(String token, int movieId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        long userId = user.getUserId();
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("movieId", movieId);
@@ -247,8 +232,10 @@ public class UserService {
         return ResponseEntity.badRequest().body("Already Ggim");
     }
 
-    public ResponseEntity<String> ggimdelete(int movieId) {
-        long userId = userUtil.getCurrentUsername();
+    public ResponseEntity<String> ggimdelete(String token, int movieId) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        long userId = user.getUserId();
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("movieId", movieId);
@@ -259,27 +246,16 @@ public class UserService {
         return ResponseEntity.badRequest().body("Not Ggim");
     }
 
-    public ResponseEntity<?> ggimMovie() {
-        long userId = userUtil.getCurrentUsername();
+    public ResponseEntity<?> ggimMovie(String token) {
+        String email = jwtUtil.getEmail(token);
+        User user = userRepository.findByEmail(email);
+        long userId = user.getUserId();
         System.out.println(userId);
         List<GgimMovieDto> ggimMovieList =userRepository.getGgimMovie(userId);
 
         return ResponseEntity.ok(Map.of(
                 "movie", ggimMovieList
         ));
-    }
-
-    public UserDto getUserInfo() {
-        long userId = userUtil.getCurrentUsername();
-
-        User user = userRepository.findByUserId(userId);
-        UserDto userDto = new UserDto();
-        userDto.setNickname(user.getNickname());
-        userDto.setId(user.getId());
-        userDto.setBirth(user.getBirth());
-        userDto.setPhone(user.getPhone());
-        userDto.setRole(user.getRole());
-        return userDto;
     }
 
 }
