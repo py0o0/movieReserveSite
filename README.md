@@ -86,7 +86,7 @@
 <br>
 
  ## ERD
-<img src= "https://github.com/user-attachments/assets/858655d4-eaad-4c74-9759-544628c65456" alt="DB" width="100%" height="auto">
+[@ERD ](https://www.notion.so/ERD-2a63e509776d80b88a0fda14576b5bff)
 
 <br>
 
